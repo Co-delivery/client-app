@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "469112306427",
+    "project_id": "codelivery-fdee0",
+    "storage_bucket": "codelivery-fdee0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:469112306427:android:eedd2da646ba119e2bce5e",
+        "android_client_info": {
+          "package_name": "com.example.codelivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "469112306427-hcbsbn77guql2t5ltduc1dikhpa09lgb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.codelivery",
+            "certificate_hash": "03f5cf22a5d013ab219afaf010f2a007a7920e09"
+          }
+        },
+        {
+          "client_id": "469112306427-arasijp8nhpnafem0dr0ia42rn9rtc2j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCI8tXQWBCk5aJtmyekbHPz5iosBcrAKt8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "469112306427-arasijp8nhpnafem0dr0ia42rn9rtc2j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
