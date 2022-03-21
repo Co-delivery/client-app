@@ -1,6 +1,57 @@
 import 'package:flutter/material.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Handling a background message ${message.messageId}');
+}
+
+late AndroidNotificationChannel channel;
+late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  channel = const AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    description:
+        'This channel is used for important notifications.', // description
+    importance: Importance.high,
+  );
+
+  var initialzationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  var initialzationSettingsIOS = IOSInitializationSettings(
+    requestSoundPermission: true,
+    requestBadgePermission: true,
+    requestAlertPermission: true,
+  );
+
+  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  var initializationSettings = InitializationSettings(
+      android: initialzationSettingsAndroid, iOS: initialzationSettingsIOS);
+
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+  );
+
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
   runApp(const MyApp());
 }
 
@@ -48,17 +99,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  String token = "";
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+  @override
+  void initState() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      var androidNotiDetails = AndroidNotificationDetails(
+        channel.id,
+        channel.name,
+        channelDescription: channel.description,
+      );
+      var iOSNotiDetails = const IOSNotificationDetails();
+      var details =
+      NotificationDetails(android: androidNotiDetails, iOS: iOSNotiDetails);
+      if (notification != null) {
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          details,
+        );
+      }
     });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print("onMessage ${message.data["action"].toString()}");
+    });
+
+    super.initState();
   }
 
   @override
@@ -99,15 +169,19 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '$_counter',
+              '$token',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
         tooltip: 'Increment',
+        onPressed: () async {
+          token = await FirebaseMessaging.instance.getToken() ?? "";
+          print(token);
+          setState(() {});
+        },
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
