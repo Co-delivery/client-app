@@ -1,4 +1,7 @@
+import 'package:codelivery/app/ui/match/match.dart';
 import 'package:flutter/material.dart';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:get/get.dart';
 
@@ -23,6 +26,10 @@ class MyApp extends StatelessWidget {
                     children: [
                       Text(appController.message.value?.notification?.title ?? 'title', style: TextStyle(fontSize: 20)),
                       Text(appController.message.value?.notification?.body ?? 'message', style: TextStyle(fontSize: 15)),
+                      OutlinedButton(onPressed: () {
+                        appController.sendMessage(userToken: dotenv.env["FCM_TEST_USER_TOKEN"] ?? "", title: "title", body: "body");
+                        Get.to(() => MatchPage());
+                      }, child: Text("push notification")),
                     ],
                   )));
             } else if (snapshot.hasError) {
