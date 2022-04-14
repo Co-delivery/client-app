@@ -1,4 +1,5 @@
 import 'package:codelivery/app/ui/match/match.dart';
+import 'package:codelivery/app/ui/middle_point/middle_point.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
                       OutlinedButton(onPressed: () {
                         fcmController.sendMessage(email: "test", title: "title", body: "body");
                         // appController.sendMessage(userToken: dotenv.env["FCM_TEST_USER_TOKEN"] ?? "", title: "title", body: "body");
-                        Get.to(() => MatchPage());
+                        // Get.to(() => MatchPage());
+                        Get.to(() => MiddlePointPage());
                       }, child: Text("push notification")),
                     ],
                   )));
