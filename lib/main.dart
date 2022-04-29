@@ -6,5 +6,5 @@ import 'package:codelivery/app/app.dart';
 
 void main() async {
   await dotenv.load(fileName: '.env');
-  runApp(MyApp());
+  runApp(CodeliveryApp());
 }
