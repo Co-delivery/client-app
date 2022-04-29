@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:codelivery/app/ui/match/match.dart';
 import 'package:codelivery/app/ui/accept_match/accpet_match.dart';
 
+// provider로 이동하는 게 맞지 않을까? 푸시 알람은 UI를 컨트롤하는 부분이 없는 것 같은데...
+// 해봐야 눌렀을 때 페이지 이동 정도?
 class FcmController extends GetxController {
   static FcmController get to => Get.find();
 
