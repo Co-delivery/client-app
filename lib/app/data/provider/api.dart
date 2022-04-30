@@ -9,6 +9,7 @@ var headers = {
   'Content-Type': 'application/json'
 };
 
+// user, order api 사용할 예정
 class ApiClient {
   late final http.Client httpClient;
   ApiClient({required this.httpClient});
