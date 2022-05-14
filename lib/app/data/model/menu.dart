@@ -3,8 +3,6 @@ class Menu {
   late String image;
   late int price;
 
-  Menu({name, image, price});
-
   Menu.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     image = json['image'];

@@ -5,7 +5,11 @@ class User {
   late String address;
   late List<Order> orders;
 
-  User({nickname, address, orders});
+  User({nickname, address, orders}) {
+    this.nickname = nickname;
+    this.address = address;
+    this.orders = orders;
+  }
 
   User.fromJson(Map<String, dynamic> json) {
     nickname = json['nickname'];
