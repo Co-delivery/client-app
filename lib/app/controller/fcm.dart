@@ -15,6 +15,7 @@ class FcmController extends GetxController {
   static FcmController get to => Get.find();
 
   final Rxn<RemoteMessage> message = Rxn<RemoteMessage>();
+  late String? token;
 
   Future<bool> initialize() async {
     // Firebase 초기화부터 해야 Firebase Messaging 을 사용할 수 있다.
@@ -27,16 +28,16 @@ class FcmController extends GetxController {
       sound: true,
     );
 
-    String? token = await FirebaseMessaging.instance.getToken();
-    String? email = "test";
-    try {
-      final response = await http.get(Uri.parse(
-          "http://192.168.55.51:8080/api/fcm/user?email=$email&token=$token"));
-      print("response: " + response.body);
-    } catch (e) {
-      print("user initial error: " + e.toString());
-    }
-    print("after");
+    token = await FirebaseMessaging.instance.getToken();
+    // String? email = "test";
+    // try {
+    //   final response = await http.get(Uri.parse(
+    //       "http://192.168.55.51:8080/api/fcm/user?email=$email&token=$token"));
+    //   print("response: " + response.body);
+    // } catch (e) {
+    //   print("user initial error: " + e.toString());
+    // }
+    // print("after");
     // Android용 새 Notification Channel
     const AndroidNotificationChannel androidNotificationChannel =
         AndroidNotificationChannel(

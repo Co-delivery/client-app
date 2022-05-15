@@ -10,13 +10,6 @@ class GettingStartedPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: GettingStartedBody(),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.of(context).push(
-      //         // MaterialPageRoute(builder: (context) => HomePage(title: "")));
-      //         MaterialPageRoute(builder: (context) => RegisterPage()));
-      //   },
-      // ),
     );
   }
 }

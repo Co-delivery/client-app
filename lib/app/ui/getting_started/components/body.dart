@@ -37,11 +37,19 @@ class GettingStartedBody extends GetView<GettingStartedController> {
             Expanded(child: StartedPageView()),
             SizedBox(height: paddingSlideDotsFromBtn),
             FullWidthMainButton(
-              onPressed: () async => Get.toNamed('register'),
+              onPressed: () async {
+                controller.toSign(true);
+                Get.toNamed('sign');
+              },
               text: "회원 가입",
             ),
             RowTextButtonWithDescription(
-                description: "이미 계정이 있으신가요?", text: "로그인", onPressed: () {})
+                description: "이미 계정이 있으신가요?",
+                text: "로그인",
+                onPressed: () async {
+                  controller.toSign(false);
+                  Get.toNamed('sign');
+                })
           ],
         ),
       )

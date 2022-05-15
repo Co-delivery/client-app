@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import 'package:codelivery/app/controller/fcm_controller.dart';
+import 'package:codelivery/app/controller/fcm.dart';
 import 'package:codelivery/app/ui/middle_point/middle_point.dart';
 
 class HomePage extends StatelessWidget {

@@ -5,6 +5,10 @@ import 'package:get/get.dart';
 
 import 'package:codelivery/app/ui/getting_started/components/slide_item.dart';
 
+import 'package:codelivery/app/controller/sign.dart';
+import 'package:codelivery/app/data/provider/sign_api.dart';
+import 'package:codelivery/app/data/repository/sign.dart';
+
 class GettingStartedController extends GetxController {
   var page = 0.obs;
   var controller = PageController().obs;
@@ -37,5 +41,12 @@ class GettingStartedController extends GetxController {
       controller.value.animateToPage(page,
           duration: Duration(milliseconds: 300), curve: Curves.easeIn);
     }
+  }
+
+  toSign(bool isRegister) {
+    Get.delete<SignController>();
+    Get.put<SignController>(SignController(
+        isRegister: isRegister.obs,
+        repository: SignRepository(apiClient: SignApiClient())));
   }
 }
