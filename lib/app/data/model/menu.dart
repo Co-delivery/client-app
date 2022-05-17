@@ -1,19 +1,14 @@
 class Menu {
-  late String name;
+  late String title;
+  late String description;
   late String image;
   late int price;
+  late int amount;
 
-  Menu.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    image = json['image'];
-    price = json['price'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] = name;
-    data['image'] = image;
-    data['price'] = price;
-    return data;
-  }
+  Menu(
+      {required this.title,
+      required this.description,
+      required this.image,
+      required this.price,
+      required this.amount});
 }

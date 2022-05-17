@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Color
 const Color kPrimaryColor = Color(0xffBADBFF);
 const Color kPrimaryLightColor = Color(0x99E7F29D);
+const Color kScaffoldWithCardBackgroundColor = Color(0xf0EDEDED);
 const Color kDisableColor = Colors.grey;
 const Color kDisableTextColor = Colors.white;
 

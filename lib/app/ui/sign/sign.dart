@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:get/get.dart';
+
 import 'package:codelivery/app/ui/sign/components/body.dart';
 
 class SignPage extends StatelessWidget {
@@ -7,6 +9,10 @@ class SignPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: SignBody());
+    return Scaffold(
+        body: SignBody(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Get.toNamed('/home'),
+        ));
   }
 }
