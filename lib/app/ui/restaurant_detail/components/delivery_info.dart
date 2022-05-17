@@ -1,10 +1,10 @@
-import 'package:codelivery/app/constant/constant.dart';
-import 'package:codelivery/app/ui/restaurant_detail/components/bottom_shadow_card.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:codelivery/app/constant/constant.dart';
 import 'package:codelivery/app/controller/restaurant.dart';
+import 'package:codelivery/app/widgets/bottom_shadow_card.dart';
 
 class DeliveryInfo extends GetView<RestaurantController> {
   @override

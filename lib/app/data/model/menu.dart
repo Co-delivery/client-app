@@ -1,12 +1,12 @@
 class Menu {
-  late String title;
+  late String name;
   late String description;
   late String image;
   late int price;
   late int amount;
 
   Menu(
-      {required this.title,
+      {required this.name,
       required this.description,
       required this.image,
       required this.price,

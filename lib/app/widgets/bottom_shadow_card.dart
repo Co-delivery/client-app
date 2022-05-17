@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BottomShadowCard extends StatelessWidget {
-  const BottomShadowCard({Key? key, required this.child}) : super(key: key);
+  BottomShadowCard({required this.child});
 
   final Widget child;
 
