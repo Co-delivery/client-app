@@ -1,6 +1,13 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' as foundation;
+
 import 'package:get/get.dart';
 
 import 'package:codelivery/app/data/model/menu.dart';
+import 'package:codelivery/app/data/model/restaurant.dart';
+import 'package:codelivery/app/controller/order.dart';
+
 import 'package:codelivery/app/data/repository/menu.dart';
 
 class MenuController extends GetxController {
@@ -10,6 +17,7 @@ class MenuController extends GetxController {
 
   MenuController({required this.repository});
 
+  late Restaurant restaurant;
   final RxList<Menu> _menuList = List<Menu>.empty(growable: true).obs;
   late String tag;
   RxBool _enableSubMenuAmount = false.obs;
@@ -54,5 +62,66 @@ class MenuController extends GetxController {
       }
       _menuList.refresh();
     }
+  }
+
+  addMenuToOrder(Menu menu) {
+    // 이미 주문이 있을 경우
+    if (OrderController.to.orderRestaurant != null) {
+      // 같은 음식점인 경우
+      if (OrderController.to.orderRestaurant?.name == restaurant.name) {
+        // 새로운 음식인 경우
+        if (OrderController.to.orderList
+                .any((item) => item.value.name == menu.name) !=
+            true) {
+          print(Menu().obs);
+          Rx<Menu> temp = Menu.fromJson(menu.toJson()).obs;
+          OrderController.to
+              .addMenu(temp, enableSubMenuAmount, enableAddMenuAmount);
+        }
+        // 새로운 음식이 아닌 경우
+        else {
+          OrderController.to
+              .updateMenu(menu, enableSubMenuAmount, enableAddMenuAmount);
+        }
+      }
+      // 다른 음식점인 경우
+      else {
+        openDialog("장바구니에는 같은 가게의 메뉴만\n담을 수 있습니다.",
+            "선택하신 메뉴를 장바구니에 담을 경우,\n이전에 담은 메뉴가 삭제됩니다.", [
+          TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: Text("취소")),
+          TextButton(
+              onPressed: () {
+                Rx<Menu> temp = Menu.fromJson(menu.toJson()).obs;
+                OrderController.to.orderRestaurant = restaurant;
+                OrderController.to.expectedPrice = 0;
+                OrderController.to.orderList = <Rx<Menu>>[];
+                OrderController.to
+                    .addMenu(temp, enableSubMenuAmount, enableAddMenuAmount);
+                Get.back();
+                Get.back();
+              },
+              child: Text("담기")),
+        ]);
+      }
+    }
+    // 주문이 아예 없는 경우
+    else {
+      OrderController.to.orderRestaurant = restaurant;
+      Rx<Menu> temp = Menu.fromJson(menu.toJson()).obs;
+      OrderController.to
+          .addMenu(temp, enableSubMenuAmount, enableAddMenuAmount);
+    }
+  }
+
+  void openDialog(String title, String content, List<Widget> actions) {
+    Get.dialog(foundation.defaultTargetPlatform == foundation.TargetPlatform.iOS
+        ? CupertinoAlertDialog(
+            title: Text(title), content: Text(content), actions: actions)
+        : AlertDialog(
+            title: Text(title), content: Text(content), actions: actions));
   }
 }

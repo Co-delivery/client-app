@@ -40,6 +40,7 @@ class RestaurantController extends GetxController {
 
       final menuController =
           Get.find<MenuController>(tag: restaurantList[index].name);
+      menuController.restaurant = restaurantList[index];
       menuController.tag = restaurantList[index].name;
       menuController.initMenuList(restaurantList[index].name);
     }));

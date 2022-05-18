@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 
 import 'package:codelivery/app/constant/constant.dart';
 import 'package:codelivery/app/controller/menu.dart';
-import 'package:codelivery/app/ui/menu_detail/components/adjust_amount_button.dart';
+
+import 'package:codelivery/app/widgets/adjust_amount_button.dart';
 import 'package:codelivery/app/widgets/bottom_shadow_card.dart';
 
 class MenuDetailBody extends GetView {
@@ -14,6 +15,7 @@ class MenuDetailBody extends GetView {
   Widget build(BuildContext context) {
     final controller = Get.find<MenuController>(tag: Get.arguments['tag']);
     final menu = controller.menuList[Get.arguments['index']];
+    final size = MediaQuery.of(context).size;
 
     return SingleChildScrollView(
       child: Container(
@@ -51,7 +53,18 @@ class MenuDetailBody extends GetView {
                           child: Text("수량",
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold))),
-                      AdjustAmountButton()
+                      Obx(() => AdjustAmountButton(
+                            width: size.width * 0.45,
+                            radius: 30,
+                            amount: controller
+                                .menuList[Get.arguments['index']].amount,
+                            enableSubMenuAmount: controller.enableSubMenuAmount,
+                            enableAddMenuAmount: controller.enableAddMenuAmount,
+                            subOnPressed: () => controller
+                                .subMenuAmount(Get.arguments['index']),
+                            addOnPressed: () => controller
+                                .addMenuAmount(Get.arguments['index']),
+                          ))
                     ],
                   )),
             ],

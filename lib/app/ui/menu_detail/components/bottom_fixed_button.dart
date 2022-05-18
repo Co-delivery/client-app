@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' as foundation;
 
 import 'package:get/get.dart';
 
@@ -6,6 +8,8 @@ import 'package:codelivery/app/constant/constant.dart';
 import 'package:codelivery/app/controller/menu.dart';
 
 class BottomFixedButton extends GetView {
+  const BottomFixedButton({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<MenuController>(tag: Get.arguments['tag']);
@@ -35,17 +39,26 @@ class BottomFixedButton extends GetView {
                 height: kDefaultPadding / 2,
               ),
               OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.addMenuToOrder(menu);
+                    controller.menuList[Get.arguments['index']].amount = 1;
+                    if(!Get.isDialogOpen!) Get.back();
+                  },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(kPrimaryColor),
                       foregroundColor: MaterialStateProperty.all(Colors.white)),
                   child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: kDefaultPadding / 2),
-                      child: Text(
-                        menu.price.toString() + "원 담기",
-                        style: TextStyle(fontSize: 20),
-                      )))
+                      child: Obx(() => Text(
+                            (controller.menuList[Get.arguments['index']].price *
+                                        controller
+                                            .menuList[Get.arguments['index']]
+                                            .amount)
+                                    .toString() +
+                                "원 담기",
+                            style: TextStyle(fontSize: 20),
+                          ))))
             ],
           )),
     );

@@ -1,6 +1,8 @@
-import 'package:codelivery/app/constant/constant.dart';
 import 'package:flutter/material.dart';
 
+import 'package:get/get.dart';
+
+import 'package:codelivery/app/constant/constant.dart';
 import 'package:codelivery/app/ui/restaurant_detail/components/body.dart';
 
 class RestaurantDetailPage extends StatelessWidget {
@@ -9,6 +11,10 @@ class RestaurantDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return const Scaffold(body: RestaurantDetailBody());
+    return Scaffold(
+      body: const RestaurantDetailBody(),
+      floatingActionButton:
+          FloatingActionButton(onPressed: () => Get.toNamed('/order_basket')),
+    );
   }
 }
