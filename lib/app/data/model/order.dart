@@ -4,21 +4,24 @@ import 'package:codelivery/app/data/model/restaurant.dart';
 class Order {
   late Restaurant restaurant;
   late List<Menu> menuList;
-  late int price;
+  late int orderAmount;
+  late int deliveryFee;
 
-  Order({restaurant, menu, price});
+  Order({restaurant, menu, orderAmount, deliveryFee});
 
   Order.fromJson(Map<String, dynamic> json) {
     restaurant = json['restaurant'];
     menuList = json['food'];
-    price = json['price'];
+    orderAmount = json['orderAmount'];
+    deliveryFee = json['deliveryFee'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['restaurant'] = restaurant;
     data['food'] = menuList;
-    data['price'] = price;
+    data['orderAmount'] = orderAmount;
+    data['deliveryFee'] = deliveryFee;
     return data;
   }
 }

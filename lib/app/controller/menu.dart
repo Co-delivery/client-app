@@ -73,7 +73,6 @@ class MenuController extends GetxController {
         if (OrderController.to.orderList
                 .any((item) => item.value.name == menu.name) !=
             true) {
-          print(Menu().obs);
           Rx<Menu> temp = Menu.fromJson(menu.toJson()).obs;
           OrderController.to
               .addMenu(temp, enableSubMenuAmount, enableAddMenuAmount);

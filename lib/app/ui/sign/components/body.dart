@@ -52,7 +52,7 @@ class SignBody extends GetView<SignController> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 // SizedBox(height: paddingFromTop),
-                                controller.isRegister
+                                controller.isSign
                                     ? Lottie.asset(
                                         "assets/lotties/register.json",
                                         height: size.width / 2)
@@ -72,7 +72,7 @@ class SignBody extends GetView<SignController> {
                                         controller.sign.password = value,
                                     onSubmitted: (value) =>
                                         controller.sign.password = value),
-                                controller.isRegister
+                                controller.isSign
                                     ? RoundedInputField(
                                         maxLength: 20,
                                         hintText: "닉네임을 입력하세요",
@@ -81,7 +81,7 @@ class SignBody extends GetView<SignController> {
                                         onSubmitted: (value) =>
                                             controller.sign.nickname = value)
                                     : Container(),
-                                controller.isRegister
+                                controller.isSign
                                     ? RoundedInputField(
                                         maxLength: 50,
                                         hintText: "주소를 입력하세요",
@@ -92,12 +92,27 @@ class SignBody extends GetView<SignController> {
                                     : Container(),
                                 RoundedRegisterButton(
                                   onPressed: () async {
-                                    if (controller.isRegister == true) {
+                                    if (controller.isSign == true) {
                                       if (controller.sign.userId != "" &&
                                           controller.sign.password != "" &&
                                           controller.sign.nickname != "" &&
                                           controller.sign.address != "") {
                                         await controller.register();
+                                        if (controller.isRegister) {
+                                          controller.isSign = !controller.isSign;
+                                        } else {
+                                          openDialog(
+                                            '문제가 발생했어요!',
+                                            '회원가입을 할 수 없습니다.',
+                                            [
+                                              TextButton(
+                                                child: const Text('취소'),
+                                                onPressed: () => Get.back(),
+                                              )
+                                            ],
+                                          );
+                                          return;
+                                        }
                                       } else {
                                         openDialog(
                                           '빈 칸이 있어요',
@@ -115,6 +130,21 @@ class SignBody extends GetView<SignController> {
                                       if (controller.sign.userId != "" &&
                                           controller.sign.password != "") {
                                         await controller.login();
+                                        if (controller.isLogin) {
+                                          Get.offAllNamed('/home');
+                                        } else {
+                                          openDialog(
+                                            '문제가 발생했어요!',
+                                            '로그인을 할 수 없습니다.',
+                                            [
+                                              TextButton(
+                                                child: const Text('취소'),
+                                                onPressed: () => Get.back(),
+                                              )
+                                            ],
+                                          );
+                                          return;
+                                        }
                                       } else {
                                         openDialog(
                                           '빈 칸이 있어요',
@@ -133,14 +163,14 @@ class SignBody extends GetView<SignController> {
                                   text: '회원가입',
                                 ),
                                 RowTextButtonWithDescription(
-                                    description: !controller.isRegister
+                                    description: !controller.isSign
                                         ? "계정이 없으신가요?"
                                         : "이미 계정이 있으신가요?",
                                     text:
-                                        !controller.isRegister ? "회원가입" : "로그인",
+                                        !controller.isSign ? "회원가입" : "로그인",
                                     onPressed: () async {
-                                      controller.isRegister =
-                                          !controller.isRegister;
+                                      controller.isSign =
+                                          !controller.isSign;
                                     })
                               ],
                             )))))));

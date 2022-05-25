@@ -1,4 +1,11 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' as foundation;
+
 import 'package:get/get.dart';
+
+import 'package:codelivery/app/controller/user.dart';
+import 'package:codelivery/app/data/model/order.dart';
 
 import 'package:codelivery/app/data/model/restaurant.dart';
 import 'package:codelivery/app/data/model/menu.dart';
@@ -42,13 +49,13 @@ class OrderController extends GetxController {
   set expectedPrice(value) => _expectedPrice.value = value;
 
   subMenuAmount(int index) {
-    if (orderList[index].amount != 1) {
-      orderList[index].amount -= 1;
-      expectedPrice -= orderList[index].price;
-      if (orderList[index].amount < 10) {
+    if (orderList[index].value.amount != 1) {
+      orderList[index].value.amount -= 1;
+      expectedPrice -= orderList[index].value.price;
+      if (orderList[index].value.amount < 10) {
         enableAddMenuAmountList[index] = true;
       }
-      if (orderList[index].amount == 1) {
+      if (orderList[index].value.amount == 1) {
         enableSubMenuAmountList[index] = false;
       }
       _orderList.refresh();
@@ -56,13 +63,13 @@ class OrderController extends GetxController {
   }
 
   addMenuAmount(int index) {
-    if (orderList[index].amount != 10) {
-      orderList[index].amount += 1;
-      expectedPrice += orderList[index].price;
-      if (orderList[index].amount > 1) {
+    if (orderList[index].value.amount != 10) {
+      orderList[index].value.amount += 1;
+      expectedPrice += orderList[index].value.price;
+      if (orderList[index].value.amount > 1) {
         enableSubMenuAmountList[index] = true;
       }
-      if (orderList[index].amount == 10) {
+      if (orderList[index].value.amount == 10) {
         enableAddMenuAmountList[index] = false;
       }
       _orderList.refresh();
@@ -99,4 +106,20 @@ class OrderController extends GetxController {
 
   selectReceiveDelivery(int index) =>
       receiveDelivery = receiveDeliveryList[index];
+
+  requestOrder() {
+    UserController.to.user.order = Order(
+        restaurant: orderRestaurant,
+        menu: orderList,
+        orderAmount: expectedPrice - orderRestaurant?.minDeliveryTip,
+        deliveryFee: orderRestaurant?.minDeliveryTip);
+  }
+
+  void openDialog(String title, String content, List<Widget> actions) {
+    Get.dialog(foundation.defaultTargetPlatform == foundation.TargetPlatform.iOS
+        ? CupertinoAlertDialog(
+            title: Text(title), content: Text(content), actions: actions)
+        : AlertDialog(
+            title: Text(title), content: Text(content), actions: actions));
+  }
 }

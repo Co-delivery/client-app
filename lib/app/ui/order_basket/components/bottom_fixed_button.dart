@@ -1,3 +1,4 @@
+import 'package:codelivery/app/controller/order.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -23,7 +24,19 @@ class BottomFixedButton extends GetView {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    bool isRequestAvailable =
+                    OrderController.to.orderList.length == 0 ? false : true;
+                    if (isRequestAvailable) {
+                      OrderController.to.requestOrder();
+                      Get.toNamed('/middle_point');
+                    } else {
+                      OrderController.to.openDialog("요청 불가", "주문이 없어요!", [
+                        TextButton(
+                            onPressed: () => Get.back(), child: Text("확인"))
+                      ]);
+                    }
+                  },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(kPrimaryColor),
                       foregroundColor: MaterialStateProperty.all(Colors.white)),
