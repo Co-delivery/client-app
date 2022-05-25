@@ -22,11 +22,11 @@ class MiddlePointFloatingActionButton extends GetView<MiddlePointController> {
                   controller.webViewController = webViewController;
                   // controller.sendLocationToWebView("경기도 화성시 동탄지성로 295", "경기도 수원시 권선구 서수원로 607");
                 },
-                onProgress: (url) {
-
+                onProgress: (url) async {
+                  await controller.sendLocationToWebView("경기도 화성시 동탄지성로 295", "경기도 수원시 권선구 서수원로 607");
                 },
-                onPageStarted: (url) {
-                  controller.sendLocationToWebView("경기도 화성시 동탄지성로 295", "경기도 수원시 권선구 서수원로 607");
+                onPageStarted: (url) async {
+                  await controller.sendLocationToWebView("경기도 화성시 동탄지성로 295", "경기도 수원시 권선구 서수원로 607");
                 },
                 javascriptChannels: Set.from([
                   JavascriptChannel(

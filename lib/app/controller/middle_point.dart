@@ -12,7 +12,12 @@ class MiddlePointController extends GetxController {
     //     method: WebViewRequestMethod.get,
     //     headers: <String, String>{'Content-Type': 'application/json'},
     //     body: Uint8List.fromList((address1 + " " + address2).codeUnits));
+    await webViewController!.runJavascriptReturningResult(
+        'window.fromFlutter("$address1", "$address2")');
+  }
+
+  sendNicknameToWebView(String nickname, String roomName) async {
     await webViewController!
-        .runJavascriptReturningResult('window.fromFlutter("$address1", "$address2")');
+        .runJavascript('window.getMatchResult("$nickname", "$roomName")');
   }
 }

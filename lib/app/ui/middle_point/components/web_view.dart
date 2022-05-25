@@ -1,3 +1,4 @@
+import 'package:codelivery/app/controller/user.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -10,20 +11,27 @@ class MiddlePointWebView extends GetView<MiddlePointController> {
   @override
   Widget build(BuildContext context) {
     return WebView(
-      initialUrl: 'https://middlecal.herokuapp.com/',
+      initialUrl: '',
       javascriptMode: JavascriptMode.unrestricted,
       onWebViewCreated: (WebViewController webViewController) {
         controller.webViewController = webViewController;
         // controller.sendLocationToWebView("경기도 화성시 동탄지성로 295", "경기도 수원시 권선구 서수원로 607");
       },
-      onProgress: (url) async {
-        await controller.sendLocationToWebView(
-            "경기도 화성시 동탄지성로 295", "경기도 수원시 권선구 서수원로 607");
-      },
-      // onPageFinished: (url) async {
-      //   await controller.sendLocationToWebView(
-      //       "경기도 화성시 동탄지성로 295", "경기도 수원시 권선구 서수원로 607");
+      // onPageStarted: (url) async {
+      //   print("started");
+      //   await controller.sendNicknameToWebView("dongha", "dongha jin");
       // },
+      onProgress: (url) async {
+        print("Progress");
+        await controller.sendNicknameToWebView("dongha", "dongha jin");
+      },
+      // onProgress: (url) async {
+      //   controller.sendNicknameToWebView("dongha", "dongha jin");
+      // },
+      onPageFinished: (url) async {
+        print("finished");
+        // await controller.sendNicknameToWebView("dongha", "dongha jin");
+      },
       javascriptChannels: Set.from([
         JavascriptChannel(
             name: 'JavaScriptChannel',
