@@ -22,13 +22,14 @@ class MatchController extends GetxController {
   onReady() async {
     super.onReady();
     // TODO: 에러 핸들링
+    isMatchRequested = true;
     await requestMatch();
   }
 
   @override
   onClose() async {
     // TODO: 에러 핸들링
-    await cancelMatch();
+    if (!isMatchCanceled) await cancelMatch();
     _timer.cancel();
     super.onClose();
   }
@@ -36,6 +37,8 @@ class MatchController extends GetxController {
   final RxInt _waitTime = 12.obs;
   final RxBool _isMatchSuccess = false.obs;
   final RxBool _isMatchTimeOut = false.obs;
+  bool isMatchRequested = false;
+  bool isMatchCanceled = false;
   int matchId = 0;
   int user_num = 0;
 
@@ -51,17 +54,20 @@ class MatchController extends GetxController {
 
   set isMatchTimeOut(value) => _isMatchTimeOut.value = value;
 
-  setTimer() {
+  setTimer() async {
     isMatchTimeOut = false;
     isMatchSuccess = false;
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    if (!isMatchRequested) await requestMatch();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (waitTime > 0) {
         waitTime -= 1;
       } else {
         isMatchTimeOut = true;
         isMatchSuccess = false;
         showTimeOutDialog();
+        await cancelMatch();
         _timer.cancel();
       }
     });
@@ -92,15 +98,20 @@ class MatchController extends GetxController {
   }
 
   requestMatch() async {
+    if (isMatchRequested) return;
+
     String menu_price = (OrderController.to.expectedPrice -
             OrderController.to.orderRestaurant!.minDeliveryTip)
         .toString();
     List<String> item = List<String>.empty(growable: true);
 
-    OrderController.to.orderList.forEach((menu) => item.add(menu.name));
+    OrderController.to.orderList.forEach((menu) => item.add(menu.value.name));
 
     Map<String, dynamic> requestJson = <String, dynamic>{
-      'nickname': UserController.to.user.nickname,
+      // 현재
+      'userId': 'test',
+      // 추후 실 테스트
+      // 'nickname': UserController.to.user.nickname,
       'address': UserController.to.user.address,
       'restaurant': OrderController.to.orderRestaurant!.name,
       'menu_price': menu_price,
@@ -111,6 +122,9 @@ class MatchController extends GetxController {
 
     final result = await repository.requestMatch(requestJson);
 
+    isMatchCanceled = false;
+    isMatchRequested = false;
+
     if (result['statusCode'] == 200) {
       return true;
     } else {
@@ -119,8 +133,14 @@ class MatchController extends GetxController {
   }
 
   cancelMatch() async {
-    final result =
-        await repository.cancelMatch(UserController.to.user.nickname);
+    if (isMatchCanceled) return;
+
+    final result = await repository.cancelMatch("test");
+    // 추후 실 테스트
+    // final result =
+    //     await repository.cancelMatch(UserController.to.user.nickname);
+
+    isMatchCanceled = true;
 
     if (result['statusCode'] == 200) {
       return true;

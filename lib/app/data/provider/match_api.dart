@@ -19,12 +19,12 @@ class MatchApiClient {
 
   Future<Map<String, dynamic>> requestMatch(Map<String, dynamic> data) async =>
       await httpApiClient.post(
-          'http://' + dotenv.env['SERVER_IP']! + ":8080/match/requst",
+          'http://' + dotenv.env['SERVER_IP']! + ":8080/match/request",
           data,
           headers);
 
   Future<Map<String, dynamic>> cancelMatch(Map<String, dynamic> data) async =>
-      await httpApiClient.post(
+      await httpApiClient.delete(
           'http://' + dotenv.env['SERVER_IP']! + ":8080/match/cancel",
           data,
           headers);

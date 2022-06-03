@@ -9,7 +9,10 @@ class MatchRepository {
       await apiClient.requestMatch(data);
 
   Future<Map<String, dynamic>> cancelMatch(String nickname) async {
-    Map<String, dynamic> data = {'nickname': nickname};
+    // 현재
+    Map<String, dynamic> data = {"userId": nickname};
+    // 추후 실 테스트
+    // Map<String, dynamic> data = {'nickname': nickname};
     return await apiClient.cancelMatch(data);
   }
 

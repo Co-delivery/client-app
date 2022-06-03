@@ -23,7 +23,8 @@ class Body extends GetView<MatchController> {
               top: 0.0,
               right: 0.0,
               child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
+                    await controller.cancelMatch();
                     controller.cancelTimer();
                     Get.back();
                   },
