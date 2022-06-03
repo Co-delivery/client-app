@@ -23,19 +23,17 @@ class MiddlePointFloatingActionButton extends GetView<MiddlePointController> {
                   // controller.sendLocationToWebView("경기도 화성시 동탄지성로 295", "경기도 수원시 권선구 서수원로 607");
                 },
                 onProgress: (url) async {
-                  await controller.sendLocationToWebView("경기도 화성시 동탄지성로 295", "경기도 수원시 권선구 서수원로 607");
+                  await controller.sendLocationToWebView(
+                      "경기도 수원시 영통구 중부대로271번길 27-9", "경기도 수원시 영통구 월드컵로 206");
                 },
                 onPageStarted: (url) async {
-                  await controller.sendLocationToWebView("경기도 화성시 동탄지성로 295", "경기도 수원시 권선구 서수원로 607");
+                  await controller.sendLocationToWebView(
+                      "경기도 수원시 영통구 중부대로271번길 27-9", "경기도 수원시 영통구 월드컵로 206");
                 },
                 javascriptChannels: Set.from([
                   JavascriptChannel(
                       name: 'JavaScriptChannel',
                       onMessageReceived: (JavascriptMessage message) {
-                        //This is where you receive message from
-                        //javascript code and handle in Flutter/Dart
-                        //like here, the message is just being printed
-                        //in Run/LogCat window of android studio
                         print(message.message);
                       })
                 ]),

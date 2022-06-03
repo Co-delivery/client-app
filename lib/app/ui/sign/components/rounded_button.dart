@@ -29,8 +29,8 @@ class RoundedButton extends StatelessWidget {
                     padding: MaterialStateProperty.all(
                         const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 40)),
-                    backgroundColor: MaterialStateProperty.all(kPrimaryColor),
-                    foregroundColor: MaterialStateProperty.all(kPrimaryColor)),
+                    backgroundColor: MaterialStateProperty.all(kSubItemColor),
+                    foregroundColor: MaterialStateProperty.all(kSubItemColor)),
                 child: Text(
                   text,
                   style: TextStyle(

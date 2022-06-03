@@ -39,7 +39,13 @@ class HomePage extends GetView {
       // backgroundColor: kScaffoldWithCardBackgroundColor,
       body: HomeBody(),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
         onPressed: () => Get.toNamed('/order_basket'),
+        child: Icon(
+          Icons.shopping_basket_rounded,
+          color: Colors.blue,
+          size: 33,
+        ),
       ),
     );
   }

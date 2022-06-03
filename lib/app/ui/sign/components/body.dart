@@ -1,3 +1,4 @@
+import 'package:codelivery/app/ui/sign/components/rounded_password_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' as foundation;
@@ -65,13 +66,6 @@ class SignBody extends GetView<SignController> {
                                         controller.sign.userId = value,
                                     onSubmitted: (value) =>
                                         controller.sign.userId = value),
-                                RoundedInputField(
-                                    maxLength: 20,
-                                    hintText: "비밀번호를 입력하세요",
-                                    onChanged: (value) =>
-                                        controller.sign.password = value,
-                                    onSubmitted: (value) =>
-                                        controller.sign.password = value),
                                 controller.isSign
                                     ? RoundedInputField(
                                         maxLength: 20,
@@ -81,8 +75,15 @@ class SignBody extends GetView<SignController> {
                                         onSubmitted: (value) =>
                                             controller.sign.nickname = value)
                                     : Container(),
+                                RoundedPasswordField(
+                                    onChanged: (value) =>
+                                        controller.sign.password = value,
+                                    onSubmitted: (value) =>
+                                        controller.sign.password = value),
+
                                 controller.isSign
                                     ? RoundedInputField(
+                                        icon: Icons.home_rounded,
                                         maxLength: 50,
                                         hintText: "주소를 입력하세요",
                                         onChanged: (value) =>
@@ -93,20 +94,26 @@ class SignBody extends GetView<SignController> {
                                 RoundedRegisterButton(
                                   onPressed: () async {
                                     if (controller.isSign == true) {
-                                      if (controller.sign.userId != "" &&
-                                          controller.sign.password != "" &&
-                                          controller.sign.nickname != "" &&
-                                          controller.sign.address != "") {
+                                      bool isAllInfoEmpty = (controller
+                                                      .sign.userId !=
+                                                  "" &&
+                                              controller.sign.password != "" &&
+                                              controller.sign.nickname != "" &&
+                                              controller.sign.address != "")
+                                          ? false
+                                          : true;
+                                      if (!isAllInfoEmpty) {
                                         await controller.register();
                                         if (controller.isRegister) {
-                                          controller.isSign = !controller.isSign;
+                                          controller.isSign =
+                                              !controller.isSign;
                                         } else {
                                           openDialog(
                                             '문제가 발생했어요!',
                                             '회원가입을 할 수 없습니다.',
                                             [
                                               TextButton(
-                                                child: const Text('취소'),
+                                                child: const Text('확인'),
                                                 onPressed: () => Get.back(),
                                               )
                                             ],
@@ -119,7 +126,7 @@ class SignBody extends GetView<SignController> {
                                           '제대로 입력 했는지 확인해주세요!',
                                           [
                                             TextButton(
-                                              child: const Text('취소'),
+                                              child: const Text('확인'),
                                               onPressed: () => Get.back(),
                                             )
                                           ],
@@ -138,7 +145,7 @@ class SignBody extends GetView<SignController> {
                                             '로그인을 할 수 없습니다.',
                                             [
                                               TextButton(
-                                                child: const Text('취소'),
+                                                child: const Text('확인'),
                                                 onPressed: () => Get.back(),
                                               )
                                             ],
@@ -151,7 +158,7 @@ class SignBody extends GetView<SignController> {
                                           '제대로 입력 했는지 확인해주세요!',
                                           [
                                             TextButton(
-                                              child: const Text('취소'),
+                                              child: const Text('확인'),
                                               onPressed: () => Get.back(),
                                             )
                                           ],
@@ -160,18 +167,15 @@ class SignBody extends GetView<SignController> {
                                       }
                                     }
                                   },
-                                  text: '회원가입',
+                                  text: controller.isSign ? "회원가입" : "로그인",
                                 ),
                                 RowTextButtonWithDescription(
                                     description: !controller.isSign
                                         ? "계정이 없으신가요?"
                                         : "이미 계정이 있으신가요?",
-                                    text:
-                                        !controller.isSign ? "회원가입" : "로그인",
-                                    onPressed: () async {
-                                      controller.isSign =
-                                          !controller.isSign;
-                                    })
+                                    text: !controller.isSign ? "회원가입" : "로그인",
+                                    onPressed: () =>
+                                        controller.refreshSignData())
                               ],
                             )))))));
   }

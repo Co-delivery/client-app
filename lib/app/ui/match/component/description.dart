@@ -1,8 +1,13 @@
+import 'package:codelivery/app/controller/match.dart';
+import 'package:codelivery/app/controller/order.dart';
+import 'package:codelivery/app/controller/user.dart';
 import 'package:flutter/material.dart';
+
+import 'package:get/get.dart';
 
 import 'package:codelivery/app/constant/constant.dart';
 
-class Description extends StatelessWidget {
+class Description extends GetView<MatchController> {
   const Description({Key? key}) : super(key: key);
 
   @override
@@ -10,9 +15,13 @@ class Description extends StatelessWidget {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.start,
       children: [
-        Text("최대 N분\n주변 사람들과\n매칭 중이에요",
+        Obx(() => Text(
+            "남은 시간 ${controller.waitTime ~/ 60}분 ${controller.waitTime % 60}초",
             style:
-                TextStyle(color: Colors.black, fontSize: kMatchTitleFontSize)),
+                TextStyle(color: Colors.white, fontSize: kMatchTitleFontSize))),
+        Text("주변 사람들과\n매칭 중이에요",
+            style:
+                TextStyle(color: Colors.white, fontSize: kMatchTitleFontSize)),
         const SizedBox(
           height: kDefaultPadding,
         ),
@@ -21,22 +30,22 @@ class Description extends StatelessWidget {
           children: [
             Text("주소  ",
                 style: TextStyle(
-                    color: Colors.black38, fontSize: kMatchOptionFontSize)),
-            Text("경기도 수원시 영통구 월드컵로 206",
+                    color: Colors.black, fontSize: kMatchOptionFontSize)),
+            Text(UserController.to.user.address,
                 style: TextStyle(
-                    color: Colors.black38, fontSize: kMatchSubTitleFontSize)),
+                    color: Colors.black, fontSize: kMatchSubTitleFontSize)),
           ],
         ),
         const SizedBox(height: kDefaultPadding / 2),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text("카테고리  ",
+            Text("주문금액  ",
                 style: TextStyle(
-                    color: Colors.black45, fontSize: kMatchOptionFontSize)),
-            Text("피자 | 치킨 | 햄버거",
+                    color: Colors.black, fontSize: kMatchOptionFontSize)),
+            Text("${OrderController.to.expectedPrice.toString()}원",
                 style: TextStyle(
-                    color: Colors.black45, fontSize: kMatchSubTitleFontSize)),
+                    color: Colors.black, fontSize: kMatchSubTitleFontSize)),
           ],
         ),
       ],

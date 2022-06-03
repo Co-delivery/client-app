@@ -8,6 +8,9 @@ import 'package:codelivery/app/constant/constant.dart';
 class BottomFixedButton extends GetView {
   @override
   Widget build(BuildContext context) {
+    bool isRequestAvailable =
+        OrderController.to.orderList.length == 0 ? false : true;
+
     return Container(
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
@@ -23,13 +26,12 @@ class BottomFixedButton extends GetView {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              OutlinedButton(
+              Obx(() => OutlinedButton(
                   onPressed: () {
-                    bool isRequestAvailable =
-                    OrderController.to.orderList.length == 0 ? false : true;
+                    // Get.toNamed('/middle_point');
                     if (isRequestAvailable) {
                       OrderController.to.requestOrder();
-                      Get.toNamed('/middle_point');
+                      Get.toNamed('/match');
                     } else {
                       OrderController.to.openDialog("요청 불가", "주문이 없어요!", [
                         TextButton(
@@ -38,15 +40,16 @@ class BottomFixedButton extends GetView {
                     }
                   },
                   style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(kPrimaryColor),
+                      backgroundColor: MaterialStateProperty.all(
+                          isRequestAvailable ? kPrimaryColor : kSystemGray),
                       foregroundColor: MaterialStateProperty.all(Colors.white)),
                   child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: kDefaultPadding / 2),
-                      child: Text(
-                        "결제하기",
-                        style: TextStyle(fontSize: 20),
-                      )))
+                    padding: const EdgeInsets.symmetric(
+                        vertical: kDefaultPadding / 2),
+                    child: Text(
+                        OrderController.to.isGroupDelivery ? "매칭 시작하기" : "결제하기",
+                        style: TextStyle(fontSize: 20)),
+                  )))
             ],
           )),
     );

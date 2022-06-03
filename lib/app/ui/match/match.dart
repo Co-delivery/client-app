@@ -10,10 +10,9 @@ class MatchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      backgroundColor: kPrimaryColor,
+    return Scaffold(
+      backgroundColor: kPrimaryLightColor,
       body: Body(),
-    ));
+    );
   }
 }

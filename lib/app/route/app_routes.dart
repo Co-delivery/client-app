@@ -1,3 +1,5 @@
+import 'package:codelivery/app/binding/dialog.dart';
+import 'package:codelivery/app/binding/match.dart';
 import 'package:codelivery/app/binding/middle_point.dart';
 import 'package:get/get.dart';
 
@@ -31,7 +33,7 @@ class AppRoutes implements Routes {
     GetPage(
         name: Routes.INITIAL,
         page: () => GettingStartedPage(),
-        bindings: [GettingStartedBinding(), FcmBinding()]),
+        bindings: [GettingStartedBinding(), FcmBinding(), DialogBinding()]),
     GetPage(name: '/sign', page: () => SignPage(), bindings: [UserBinding()]),
     GetPage(
         name: '/home',
@@ -45,7 +47,8 @@ class AppRoutes implements Routes {
     GetPage(
         name: '/restaurant_detail/menu_detail', page: () => MenuDetailPage()),
     GetPage(name: '/accept_match', page: () => AcceptMatchPage()),
-    GetPage(name: '/match', page: () => MatchPage()),
+    GetPage(
+        name: '/match', page: () => MatchPage(), bindings: [MatchBinding()]),
     GetPage(
         name: '/middle_point',
         page: () => MiddlePointPage(),

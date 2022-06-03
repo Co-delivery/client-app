@@ -1,12 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' as foundation;
 
 import 'package:get/get.dart';
+import 'package:codelivery/app/controller/dialog.dart';
+import 'package:codelivery/app/controller/order.dart';
 
 import 'package:codelivery/app/data/model/menu.dart';
 import 'package:codelivery/app/data/model/restaurant.dart';
-import 'package:codelivery/app/controller/order.dart';
 
 import 'package:codelivery/app/data/repository/menu.dart';
 
@@ -85,7 +84,7 @@ class MenuController extends GetxController {
       }
       // 다른 음식점인 경우
       else {
-        openDialog("장바구니에는 같은 가게의 메뉴만\n담을 수 있습니다.",
+        DialogController.to.openDialog("장바구니에는 같은 가게의 메뉴만\n담을 수 있습니다.",
             "선택하신 메뉴를 장바구니에 담을 경우,\n이전에 담은 메뉴가 삭제됩니다.", [
           TextButton(
               onPressed: () {
@@ -114,13 +113,5 @@ class MenuController extends GetxController {
       OrderController.to
           .addMenu(temp, enableSubMenuAmount, enableAddMenuAmount);
     }
-  }
-
-  void openDialog(String title, String content, List<Widget> actions) {
-    Get.dialog(foundation.defaultTargetPlatform == foundation.TargetPlatform.iOS
-        ? CupertinoAlertDialog(
-            title: Text(title), content: Text(content), actions: actions)
-        : AlertDialog(
-            title: Text(title), content: Text(content), actions: actions));
   }
 }

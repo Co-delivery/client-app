@@ -20,6 +20,16 @@ class RoundedRegisterButton extends GetView<SignController> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    bool isAllInfoEmpty = (controller.isSign &&
+                controller.sign.userId != "" &&
+                controller.sign.password != "" &&
+                controller.sign.nickname != "" &&
+                controller.sign.address != "") ||
+            (!controller.isSign &&
+                controller.sign.userId != "" &&
+                controller.sign.password != "")
+        ? false
+        : true;
     // total height = margin 20 + padding 20 + text 24
     return Container(
         margin: EdgeInsets.symmetric(vertical: 10),
@@ -33,15 +43,17 @@ class RoundedRegisterButton extends GetView<SignController> {
                         const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 40)),
                     backgroundColor:
-                    // controller.user.nickname.length < 2
-                    //     ? MaterialStateProperty.all(kDisableColor)
-                    //     :
-                    MaterialStateProperty.all(kPrimaryColor),
+                        // controller.user.nickname.length < 2
+                        //     ? MaterialStateProperty.all(kDisableColor)
+                        //     :
+                        MaterialStateProperty.all(
+                            isAllInfoEmpty ? kSystemGray : kPrimaryColor),
                     foregroundColor:
-                    // controller.user.nickname.length < 2
-                    //     ? MaterialStateProperty.all(kDisableTextColor)
-                    //     :
-                    MaterialStateProperty.all(kPrimaryColor)),
+                        // controller.user.nickname.length < 2
+                        //     ? MaterialStateProperty.all(kDisableTextColor)
+                        //     :
+                        MaterialStateProperty.all(
+                            isAllInfoEmpty ? kSystemGray : kPrimaryColor)),
                 child: Text(
                   text,
                   style: TextStyle(

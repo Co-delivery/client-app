@@ -18,7 +18,7 @@ class FullWidthMainButton extends StatelessWidget {
                 onPressed: onPressed,
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all(const Color(0xff216FEA)),
+                      MaterialStateProperty.all(kPrimaryColor),
                   foregroundColor: MaterialStateProperty.all(
                     const Color(0xffffffff),
                   ),

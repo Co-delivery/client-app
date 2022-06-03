@@ -10,6 +10,7 @@ class CodeliveryApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Codelivery',
       theme: ThemeData(
         primaryColor: Colors.blue,

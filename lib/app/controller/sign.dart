@@ -17,6 +17,7 @@ class SignController extends GetxController {
 
   late var _sign;
   late RxBool _isSign;
+  RxBool _isObscureText = true.obs;
   bool isRegister = false;
   bool isLogin = false;
 
@@ -27,6 +28,10 @@ class SignController extends GetxController {
   get isSign => this._isSign.value;
 
   set isSign(value) => this._isSign.value = value;
+
+  get isObscureText => _isObscureText.value;
+
+  set isObscureText(value) => _isObscureText.value = value;
 
   initSign() => _sign = repository.sign.obs;
 
@@ -45,13 +50,25 @@ class SignController extends GetxController {
       'password': sign.password,
       'token': FcmController.to.token,
     };
-    if ((await repository.login(data))['httpStatus'] == 200) {
+    final result = await repository.login(data);
+    if (result['httpStatus'] == 200) {
       UserController.to.initUser(User(
-              nickname: sign.nickname, address: sign.address, token: sign.token)
+              nickname: result['data']['nickname'],
+              address: result['data']['address'],
+              token: sign.token)
           .obs);
       isLogin = true;
     } else {
       isLogin = false;
     }
+  }
+
+  refreshSignData() {
+    isSign = !isSign;
+    sign.userId = "";
+    sign.nickname = "";
+    sign.password = "";
+    sign.address = "";
+    _sign.refresh();
   }
 }

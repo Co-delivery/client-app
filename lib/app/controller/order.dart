@@ -22,6 +22,7 @@ class OrderController extends GetxController {
       List<bool>.empty(growable: true).obs;
   final RxList<String> _receiveDeliveryList = <String>["배달", "공동배달", "포장"].obs;
   final RxString _receiveDelivery = "배달".obs;
+  final RxBool _isGroupDelivery = false.obs;
   final RxInt _expectedPrice = 0.obs;
 
   get orderList => _orderList.value;
@@ -43,6 +44,10 @@ class OrderController extends GetxController {
   get receiveDelivery => _receiveDelivery.value;
 
   set receiveDelivery(value) => _receiveDelivery.value = value;
+
+  get isGroupDelivery => _isGroupDelivery.value;
+
+  set isGroupDelivery(value) => _isGroupDelivery.value = value;
 
   get expectedPrice => _expectedPrice.value;
 
@@ -104,8 +109,10 @@ class OrderController extends GetxController {
 
   deleteMenu(int index) => orderList.removeAt(index);
 
-  selectReceiveDelivery(int index) =>
-      receiveDelivery = receiveDeliveryList[index];
+  selectReceiveDelivery(int index) {
+    receiveDelivery = receiveDeliveryList[index];
+    isGroupDelivery = receiveDelivery == "공동배달" ? true : false;
+  }
 
   requestOrder() {
     UserController.to.user.order = Order(

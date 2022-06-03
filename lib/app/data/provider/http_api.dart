@@ -24,6 +24,8 @@ class HttpApiClient {
     final responseBody = Map<String, dynamic>.from(json.decode(response.body));
 
     print(responseBody);
+
+    responseBody['statusCode'] = response.statusCode;
     return responseBody;
   }
 
@@ -40,6 +42,7 @@ class HttpApiClient {
     final responseBody = Map<String, dynamic>.from(json.decode(response.body));
 
     print(responseBody);
+    responseBody['statusCode'] = response.statusCode;
     return responseBody;
   }
 }

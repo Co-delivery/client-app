@@ -13,8 +13,15 @@ class RestaurantDetailPage extends StatelessWidget {
     // TODO: implement build
     return Scaffold(
       body: const RestaurantDetailBody(),
-      floatingActionButton:
-          FloatingActionButton(onPressed: () => Get.toNamed('/order_basket')),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        onPressed: () => Get.toNamed('/order_basket'),
+        child: Icon(
+          Icons.shopping_basket_rounded,
+          color: Colors.blue,
+          size: 33,
+        ),
+      ),
     );
   }
 }
