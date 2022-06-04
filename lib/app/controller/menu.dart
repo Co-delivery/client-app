@@ -102,7 +102,10 @@ class MenuController extends GetxController {
                 Get.back();
                 Get.back();
               },
-              child: Text("담기")),
+              child: Text(
+                "담기",
+                style: TextStyle(color: Colors.red),
+              )),
         ]);
       }
     }

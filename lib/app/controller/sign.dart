@@ -53,6 +53,7 @@ class SignController extends GetxController {
     final result = await repository.login(data);
     if (result['httpStatus'] == 200) {
       UserController.to.initUser(User(
+              userId: sign.userId,
               nickname: result['data']['nickname'],
               address: result['data']['address'],
               token: sign.token)

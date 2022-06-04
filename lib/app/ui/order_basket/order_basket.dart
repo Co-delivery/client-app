@@ -22,7 +22,7 @@ class OrderBasketPage extends GetView<OrderController> {
           elevation: 0,
           leading: IconButton(
             icon: Icon(Icons.arrow_back_outlined, color: Colors.black),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Get.back(),
           )),
       body: controller.orderList.isEmpty
           ? Container(
@@ -34,6 +34,7 @@ class OrderBasketPage extends GetView<OrderController> {
           ))
           : OrderBasketBody(),
       bottomSheet: BottomFixedButton(),
+      floatingActionButton: FloatingActionButton(onPressed: () => Get.toNamed('/middle_point'),),
     );
   }
 }

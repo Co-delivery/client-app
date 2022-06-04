@@ -10,13 +10,18 @@ class CodeliveryApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Codelivery',
-      theme: ThemeData(
-        primaryColor: Colors.blue,
-      ),
-      initialRoute: AppRoutes.routes.first.toString(),
-      getPages: AppRoutes.routes
-    );
+        debugShowCheckedModeBanner: false,
+        builder: (context, child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+            child: child!,
+          );
+        },
+        title: 'Codelivery',
+        theme: ThemeData(
+          primaryColor: Colors.blue,
+        ),
+        initialRoute: AppRoutes.routes.first.toString(),
+        getPages: AppRoutes.routes);
   }
 }

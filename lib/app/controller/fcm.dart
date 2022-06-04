@@ -1,3 +1,5 @@
+import 'package:codelivery/app/controller/match.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -6,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:codelivery/app/controller/dialog.dart';
 import 'package:codelivery/app/ui/match/match.dart';
 import 'package:codelivery/app/ui/accept_match/accpet_match.dart';
 
@@ -84,11 +87,13 @@ class FcmController extends GetxController {
     // background push notification
     FirebaseMessaging.onMessage.listen((RemoteMessage remoteMessage) {
       message.value = remoteMessage;
-      print("onMessage: " + message.value.toString());
+      print("onMessage: ${message.value?.data.toString()}");
       RemoteNotification? notification = remoteMessage.notification;
       AndroidNotification? android = remoteMessage.notification?.android;
 
       if (notification != null && android != null) {
+        Get.toNamed("/middle_point");
+
         flutterLocalNotificationsPlugin.show(
           0,
           notification.title,

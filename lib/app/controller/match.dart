@@ -34,9 +34,10 @@ class MatchController extends GetxController {
     super.onClose();
   }
 
-  final RxInt _waitTime = 12.obs;
+  final RxInt _waitTime = 300.obs;
   final RxBool _isMatchSuccess = false.obs;
   final RxBool _isMatchTimeOut = false.obs;
+  final RxBool _isMatchAccepted = false.obs;
   bool isMatchRequested = false;
   bool isMatchCanceled = false;
   int matchId = 0;
@@ -54,9 +55,14 @@ class MatchController extends GetxController {
 
   set isMatchTimeOut(value) => _isMatchTimeOut.value = value;
 
+  get isMatchAccepted => _isMatchAccepted.value;
+
+  set isMatchAccepted(value) => _isMatchAccepted.value = value;
+
   setTimer() async {
     isMatchTimeOut = false;
     isMatchSuccess = false;
+    isMatchAccepted = false;
 
     if (!isMatchRequested) await requestMatch();
 
@@ -109,7 +115,7 @@ class MatchController extends GetxController {
 
     Map<String, dynamic> requestJson = <String, dynamic>{
       // 현재
-      'userId': 'test',
+      'userId': UserController.to.user.userId,
       // 추후 실 테스트
       // 'nickname': UserController.to.user.nickname,
       'address': UserController.to.user.address,
@@ -135,7 +141,8 @@ class MatchController extends GetxController {
   cancelMatch() async {
     if (isMatchCanceled) return;
 
-    final result = await repository.cancelMatch("test");
+    final result =
+        await repository.cancelMatch(UserController.to.user.nickname);
     // 추후 실 테스트
     // final result =
     //     await repository.cancelMatch(UserController.to.user.nickname);
@@ -159,9 +166,32 @@ class MatchController extends GetxController {
     final result = await repository.acceptMatch(requestJson);
 
     if (result['statusCode'] == 200) {
+      if (select == 2) {
+        isMatchAccepted = true;
+      } else {
+        isMatchAccepted = false;
+        setTimer();
+      }
       return true;
     } else {
       return false;
     }
   }
+
+  selectMatchDialog() =>
+      DialogController.to.openDialog("매칭을 수락하시겠어요?", "매칭이 성공했어요!", [
+        TextButton(
+            onPressed: () async {
+              await MatchController.to.acceptMatch(2);
+              Get.back();
+              Get.back();
+            },
+            child: Text("취소")),
+        TextButton(
+            onPressed: () async {
+              await MatchController.to.acceptMatch(1);
+              Get.toNamed("/middle_point");
+            },
+            child: Text("수락", style: TextStyle(color: Colors.red)))
+      ]);
 }

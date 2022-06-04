@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 
-import 'package:codelivery/app/controller/middle_point.dart';
+import 'package:codelivery/app/controller/web_view.dart';
 
-class MiddlePointWebView extends GetView<MiddlePointController> {
+class ChatWebView extends GetView<WebController> {
   @override
   Widget build(BuildContext context) {
     return WebView(
@@ -22,15 +22,10 @@ class MiddlePointWebView extends GetView<MiddlePointController> {
       //   await controller.sendNicknameToWebView("dongha", "dongha jin");
       // },
       onProgress: (url) async {
-        print("Progress");
-        await controller.sendNicknameToWebView("dongha", "dongha jin");
+        await controller.sendLocationToWebView();
       },
-      // onProgress: (url) async {
-      //   controller.sendNicknameToWebView("dongha", "dongha jin");
-      // },
-      onPageFinished: (url) async {
-        print("finished");
-        // await controller.sendNicknameToWebView("dongha", "dongha jin");
+      onPageStarted: (url) async {
+        await controller.sendLocationToWebView();
       },
       javascriptChannels: Set.from([
         JavascriptChannel(

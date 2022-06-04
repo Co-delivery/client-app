@@ -1,6 +1,7 @@
 import 'package:codelivery/app/binding/dialog.dart';
 import 'package:codelivery/app/binding/match.dart';
-import 'package:codelivery/app/binding/middle_point.dart';
+
+import 'package:codelivery/app/ui/middle_point/components/chat_web_view.dart';
 import 'package:get/get.dart';
 
 import 'package:codelivery/app/route/routes.dart';
@@ -27,6 +28,8 @@ import 'package:codelivery/app/ui/restaurant_detail/restaurant_detail.dart';
 import 'package:codelivery/app/ui/menu_detail/menu_detail.dart';
 import 'package:codelivery/app/ui/middle_point/middle_point.dart';
 
+import '../ui/middle_point/components/order_bill.dart';
+
 class AppRoutes implements Routes {
   static final routes = [
     // Register pages
@@ -51,7 +54,12 @@ class AppRoutes implements Routes {
         name: '/match', page: () => MatchPage(), bindings: [MatchBinding()]),
     GetPage(
         name: '/middle_point',
-        page: () => MiddlePointPage(),
-        bindings: [MiddlePointBinding()])
+        page: () => MiddlePointPage()),
+    GetPage(
+        name: '/middle_point/chat',
+        page: () => ChatWebView()),
+    GetPage(
+        name: '/middle_point/bill',
+        page: () => OrderBill())
   ];
 }
