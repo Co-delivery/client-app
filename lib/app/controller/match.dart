@@ -23,7 +23,7 @@ class MatchController extends GetxController {
   onReady() async {
     super.onReady();
     // TODO: 에러 핸들링
-    isMatchRequested = true;
+    if (!isMatchRequested) isMatchRequested = true;
     await requestMatch();
   }
 
@@ -81,8 +81,8 @@ class MatchController extends GetxController {
         isMatchTimeOut = true;
         isFindSuccess = false;
         showTimeOutDialog();
-        await cancelMatch();
         _timer.cancel();
+        await cancelMatch();
       }
     });
   }
@@ -174,7 +174,7 @@ class MatchController extends GetxController {
     final result = await repository.acceptMatch(requestJson);
 
     if (result['statusCode'] == 200) {
-      if (select == 2) {
+      if (select == 1) {
         // TODO: 매칭 수락하더라도 상대방 수락할 때까지 대기 화면 만들기
         isMatchAccepted = true;
       } else {

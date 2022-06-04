@@ -9,9 +9,11 @@ class BottomOrderBill extends GetView<OrderController> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(kDefaultPadding),
+        padding: const EdgeInsets.symmetric(
+            horizontal: kDefaultPadding, vertical: kDefaultPadding * 2),
         child: Obx(
-              () => Column(
+          () => Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
                   padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
@@ -24,9 +26,9 @@ class BottomOrderBill extends GetView<OrderController> {
                               ))),
                       Text(
                           (controller.expectedPrice -
-                              controller
-                                  .orderRestaurant!.minDeliveryTip)
-                              .toString() +
+                                      controller
+                                          .orderRestaurant!.minDeliveryTip)
+                                  .toString() +
                               "원",
                           style: TextStyle(
                             fontSize: 16,
@@ -44,7 +46,7 @@ class BottomOrderBill extends GetView<OrderController> {
                               ))),
                       Text(
                           (controller.orderRestaurant!.minDeliveryTip ~/ 2)
-                              .toString() +
+                                  .toString() +
                               "원",
                           style: TextStyle(
                             fontSize: 16,

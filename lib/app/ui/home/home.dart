@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:codelivery/app/constant/constant.dart';
+import 'package:codelivery/app/controller/user.dart';
 import 'package:codelivery/app/ui/home/components/body.dart';
 
 class HomePage extends GetView {
@@ -12,10 +13,10 @@ class HomePage extends GetView {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "화성시 동탄지성로 295",
-          style: TextStyle(fontSize: 16),
-        ),
+        title: Obx(() => Text(
+              UserController.to.user.address,
+              style: TextStyle(fontSize: 16),
+            )),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(10),

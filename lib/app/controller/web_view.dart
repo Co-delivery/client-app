@@ -44,8 +44,22 @@ class WebController extends GetxController {
   onClose() async {
     // TODO: 에러 핸들링
     if (!_isMatchTimeOut) _timer.cancel();
+    if (!MatchController.to.isMatchAccepted) {
+      await MatchController.to.acceptMatch(2);
+    }
     super.onClose();
   }
+
+  final RxBool _isMiddlePointLoading = true.obs;
+  final RxBool _isChatLoading = true.obs;
+
+  get isMiddlePointLoading => _isMiddlePointLoading.value;
+
+  set isMiddlePointLoading(value) => _isMiddlePointLoading.value = value;
+
+  get isChatLoading => _isChatLoading.value;
+
+  set isChatLoading(value) => _isChatLoading.value = value;
 
   double mainUserLat = 0;
   double mainUserLon = 0;
@@ -77,17 +91,30 @@ class WebController extends GetxController {
 
   cancelTimer() => _timer.cancel();
 
-  sendLocationToWebView() async =>
+  sendLocationToWebView() async {
+    try {
       await webViewController!.runJavascriptReturningResult(
           'window.fromFlutter($mainUserLat, $mainUserLon, $otherUserLat, $otherUserLon)');
+      print("isMiddle ${isMiddlePointLoading}");
+      isMiddlePointLoading = false;
+    } catch (e) {
+      debugPrint("sendLocation ${e.toString()}");
+    }
+  }
 
   sendNicknameToWebView() async {
     final roomName =
         UserController.to.user.nickname.compareTo(otherUserNickname) == -1
             ? (UserController.to.user.nickname + " " + otherUserNickname)
             : (otherUserNickname + " " + UserController.to.user.nickname);
-    await webViewController!.runJavascript(
-        'window.getMatchResult("${UserController.to.user.nickname}", "${roomName}")');
+    try {
+      await webViewController!.runJavascript(
+          'window.getMatchResult("${UserController.to.user.nickname}", "${roomName}")');
+      isChatLoading = false;
+      print("isMiddle ${isChatLoading}");
+    } catch (e) {
+      debugPrint("sendLocation ${e.toString()}");
+    }
   }
 
   openWarningDialog() =>
@@ -98,8 +125,7 @@ class WebController extends GetxController {
               "아니오",
             )),
         TextButton(
-            onPressed: () async {
-              await MatchController.to.acceptMatch(1);
+            onPressed: () {
               Get.back();
               Get.back();
             },

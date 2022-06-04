@@ -10,6 +10,7 @@ import 'package:codelivery/app/ui/middle_point/components/floating_action_button
 
 import '../../controller/match.dart';
 import '../../controller/web_view.dart';
+import 'components/middle_point_web_view.dart';
 
 class MiddlePointPage extends GetView<WebController> {
   @override
@@ -20,19 +21,24 @@ class MiddlePointPage extends GetView<WebController> {
       () => Scaffold(
           appBar: MatchController.to.isMatchSuccess
               ? AppBar(
-                  leading: IconButton(
-                    icon: Icon(Icons.arrow_back_outlined, color: Colors.black),
-                    onPressed: () => Get.back(),
-                  ),
+                  toolbarHeight: 0,
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: Colors.transparent,
+                  elevation: 0,
                 )
               : AppBar(
                   centerTitle: true,
-                  title: Row(
+                  title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "매칭 수락까지 남은 시간\n",
+                          "매칭 수락까지 남은 시간",
                           style: TextStyle(color: Colors.black, fontSize: 20),
+                        ),
+                        SizedBox(
+                          height: kDefaultPadding / 4,
                         ),
                         Text(
                           controller.waitTime.toString(),
@@ -71,7 +77,7 @@ class MiddlePointPage extends GetView<WebController> {
                                     child: OutlinedButton(
                                         onPressed: () async =>
                                             await MatchController.to
-                                                .acceptMatch(2),
+                                                .acceptMatch(1),
                                         style: ButtonStyle(
                                             backgroundColor:
                                                 MaterialStateProperty.all(
@@ -89,7 +95,9 @@ class MiddlePointPage extends GetView<WebController> {
                     onPressed: () => controller.openWarningDialog(),
                   ),
                 ),
-          body: MiddlePointBody(),
+          body: MatchController.to.isMatchSuccess
+              ? MiddlePointBody()
+              : MiddlePointWebView(),
           floatingActionButton: MatchController.to.isMatchSuccess
               ? buildFloatingActionButton(context)
               : Container()),

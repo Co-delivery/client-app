@@ -15,6 +15,7 @@ import 'package:codelivery/app/controller/dialog.dart';
 
 import 'package:codelivery/app/ui/match/match.dart';
 import 'package:codelivery/app/ui/accept_match/accpet_match.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 // provider로 이동하는 게 맞지 않을까? 푸시 알람은 UI를 컨트롤하는 부분이 없는 것 같은데...
 // 해봐야 눌렀을 때 페이지 이동 정도?
@@ -137,6 +138,8 @@ class FcmController extends GetxController {
     print("handleMessage: " + (message?.data['type'] ?? "null"));
     switch (message?.data['event']) {
       case 'find match':
+        MatchController.to.matchId = int.parse(message?.data['matchId']);
+        MatchController.to.user_num = int.parse(message?.data['user_num']);
         ToWebView(
             double.parse(message?.data['my_latitude']),
             double.parse(message?.data['my_longitude']),
@@ -162,10 +165,20 @@ class FcmController extends GetxController {
         );
         break;
       case 'match fail':
-        Get.until((route) => Get.currentRoute == '/match');
+        Get.until((route) {
+          if (Get.currentRoute == '/match') {
+            MatchController.to.setTimer();
+            return true;
+          } else {
+            return false;
+          }
+        });
         break;
-      case 'chat':
-        Get.to(() => MatchPage());
+      case 'match success':
+        MatchController.to.isMatchSuccess = true;
+        WebController.to.cancelTimer();
+        WebController.to.isMiddlePointLoading = true;
+
         break;
       case 'match':
         Get.to(() => MatchPage());

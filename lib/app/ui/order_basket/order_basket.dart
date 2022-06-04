@@ -17,7 +17,10 @@ class OrderBasketPage extends GetView<OrderController> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text("장바구니", style: TextStyle(color: Colors.black),),
+          title: Text(
+            "장바구니",
+            style: TextStyle(color: Colors.black),
+          ),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -26,15 +29,14 @@ class OrderBasketPage extends GetView<OrderController> {
           )),
       body: controller.orderList.isEmpty
           ? Container(
-          alignment: Alignment.center,
-          height: heightCenter,
-          child: Text(
-            "주문이 없어요!",
-            style: TextStyle(fontSize: 20),
-          ))
+              alignment: Alignment.center,
+              height: heightCenter,
+              child: Text(
+                "주문이 없어요!",
+                style: TextStyle(fontSize: 20),
+              ))
           : OrderBasketBody(),
       bottomSheet: BottomFixedButton(),
-      floatingActionButton: FloatingActionButton(onPressed: () => Get.toNamed('/middle_point'),),
     );
   }
 }
