@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:codelivery/app/controller/match.dart';
 import 'package:codelivery/app/controller/user.dart';
 import 'package:codelivery/app/ui/middle_point/middle_point.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,8 @@ void ToWebView(double mainUserLat, double mainUserLon, String otherUserNickname,
     }));
 
 class WebController extends GetxController {
+  static WebController get to => Get.find<WebController>();
+
   WebViewController? webViewController;
 
   WebController(
@@ -26,6 +29,12 @@ class WebController extends GetxController {
       required this.otherUserLat,
       required this.otherUserLon}) {
     setTimer();
+  }
+
+  @override
+  onInit() {
+    super.onInit();
+    MatchController.to.cancelTimer();
   }
 
   @override
@@ -43,9 +52,13 @@ class WebController extends GetxController {
   double otherUserLon = 0;
 
   late Timer _timer;
-  double waitTime = 60;
+  final RxInt _waitTime = 60.obs;
 
   bool _isMatchTimeOut = false;
+
+  get waitTime => _waitTime.value;
+
+  set waitTime(value) => _waitTime.value = value;
 
   setTimer() async {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
@@ -59,10 +72,11 @@ class WebController extends GetxController {
     });
   }
 
-  sendLocationToWebView() async =>
-    await webViewController!.runJavascriptReturningResult(
-        'window.fromFlutter($mainUserLat, $mainUserLon, $otherUserLat, $otherUserLon)');
+  cancelTimer() => _timer.cancel();
 
+  sendLocationToWebView() async =>
+      await webViewController!.runJavascriptReturningResult(
+          'window.fromFlutter($mainUserLat, $mainUserLon, $otherUserLat, $otherUserLon)');
 
   sendNicknameToWebView() async {
     final roomName =

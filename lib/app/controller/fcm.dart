@@ -1,4 +1,5 @@
 import 'package:codelivery/app/controller/match.dart';
+import 'package:codelivery/app/controller/web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -92,7 +93,12 @@ class FcmController extends GetxController {
       AndroidNotification? android = remoteMessage.notification?.android;
 
       if (notification != null && android != null) {
-        Get.toNamed("/middle_point");
+        ToWebView(
+            double.parse(message.value?.data['my_latitude']),
+            double.parse(message.value?.data['my_longitude']),
+            message.value?.data['other_nickname'],
+            double.parse(message.value?.data['other_latitude']),
+            double.parse(message.value?.data['my_longitude']));
 
         flutterLocalNotificationsPlugin.show(
           0,

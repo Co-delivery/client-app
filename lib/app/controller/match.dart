@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:codelivery/app/controller/dialog.dart';
 import 'package:codelivery/app/controller/order.dart';
 import 'package:codelivery/app/controller/user.dart';
+import 'package:codelivery/app/controller/web_view.dart';
 import 'package:codelivery/app/data/repository/match.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -167,9 +168,11 @@ class MatchController extends GetxController {
 
     if (result['statusCode'] == 200) {
       if (select == 2) {
+        // TODO: 매칭 수락하더라도 상대방 수락할 때까지 대기 화면 만들기
         isMatchAccepted = true;
+        WebController.to.cancelTimer();
       } else {
-        isMatchAccepted = false;
+        // TODO: 이 부분 에러 잡기
         setTimer();
       }
       return true;
