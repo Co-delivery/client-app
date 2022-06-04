@@ -36,11 +36,13 @@ class MatchController extends GetxController {
   }
 
   final RxInt _waitTime = 300.obs;
-  final RxBool _isMatchSuccess = false.obs;
+  final RxBool _isFindSuccess = false.obs;
   final RxBool _isMatchTimeOut = false.obs;
   final RxBool _isMatchAccepted = false.obs;
+  final RxBool _isMatchSuccess = false.obs;
   bool isMatchRequested = false;
   bool isMatchCanceled = false;
+  bool isMatchFailed = false;
   int matchId = 0;
   int user_num = 0;
 
@@ -48,9 +50,9 @@ class MatchController extends GetxController {
 
   set waitTime(value) => _waitTime.value = value;
 
-  get isMatchSuccess => _isMatchSuccess.value;
+  get isFindSuccess => _isFindSuccess.value;
 
-  set isMatchSuccess(value) => _isMatchSuccess.value = value;
+  set isFindSuccess(value) => _isFindSuccess.value = value;
 
   get isMatchTimeOut => _isMatchTimeOut.value;
 
@@ -60,10 +62,15 @@ class MatchController extends GetxController {
 
   set isMatchAccepted(value) => _isMatchAccepted.value = value;
 
+  get isMatchSuccess => _isMatchSuccess.value;
+
+  set isMatchSuccess(value) => _isMatchSuccess.value = value;
+
   setTimer() async {
     isMatchTimeOut = false;
-    isMatchSuccess = false;
+    isFindSuccess = false;
     isMatchAccepted = false;
+    isMatchSuccess = false;
 
     if (!isMatchRequested) await requestMatch();
 
@@ -72,7 +79,7 @@ class MatchController extends GetxController {
         waitTime -= 1;
       } else {
         isMatchTimeOut = true;
-        isMatchSuccess = false;
+        isFindSuccess = false;
         showTimeOutDialog();
         await cancelMatch();
         _timer.cancel();
@@ -170,7 +177,6 @@ class MatchController extends GetxController {
       if (select == 2) {
         // TODO: 매칭 수락하더라도 상대방 수락할 때까지 대기 화면 만들기
         isMatchAccepted = true;
-        WebController.to.cancelTimer();
       } else {
         // TODO: 이 부분 에러 잡기
         setTimer();

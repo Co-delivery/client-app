@@ -1,6 +1,6 @@
-import 'package:codelivery/app/controller/match.dart';
-import 'package:codelivery/app/controller/web_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' as foundation;
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -9,7 +9,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:codelivery/app/controller/match.dart';
+import 'package:codelivery/app/controller/web_view.dart';
 import 'package:codelivery/app/controller/dialog.dart';
+
 import 'package:codelivery/app/ui/match/match.dart';
 import 'package:codelivery/app/ui/accept_match/accpet_match.dart';
 
@@ -19,6 +22,8 @@ class FcmController extends GetxController {
   static FcmController get to => Get.find();
 
   final Rxn<RemoteMessage> message = Rxn<RemoteMessage>();
+  late final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  late RemoteNotification? notification;
   late String? token;
 
   Future<bool> initialize() async {
@@ -52,8 +57,7 @@ class FcmController extends GetxController {
     );
 
     // Notification Channel을 디바이스에 생성
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
@@ -89,32 +93,23 @@ class FcmController extends GetxController {
     FirebaseMessaging.onMessage.listen((RemoteMessage remoteMessage) {
       message.value = remoteMessage;
       print("onMessage: ${message.value?.data.toString()}");
-      RemoteNotification? notification = remoteMessage.notification;
+      notification = remoteMessage.notification;
       AndroidNotification? android = remoteMessage.notification?.android;
 
-      if (notification != null && android != null) {
-        ToWebView(
-            double.parse(message.value?.data['my_latitude']),
-            double.parse(message.value?.data['my_longitude']),
-            message.value?.data['other_nickname'],
-            double.parse(message.value?.data['other_latitude']),
-            double.parse(message.value?.data['my_longitude']));
+      bool isIOS =
+          (foundation.defaultTargetPlatform == foundation.TargetPlatform.iOS &&
+                  notification != null)
+              ? true
+              : false;
+      bool isAndroid = (foundation.defaultTargetPlatform ==
+                  foundation.TargetPlatform.android &&
+              notification != null &&
+              android != null)
+          ? true
+          : false;
 
-        flutterLocalNotificationsPlugin.show(
-          0,
-          notification.title,
-          notification.body,
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              'high_importance_channel',
-              // AndroidNotificationChannel()에서 생성한 ID
-              'High Importance Notifications',
-              channelDescription:
-                  'This channel is used for important notifications.',
-              // other properties...
-            ),
-          ),
-        );
+      if (isIOS || isAndroid) {
+        _handleMessage(message.value);
       }
     });
 
@@ -136,14 +131,38 @@ class FcmController extends GetxController {
     return;
   }
 
-  void _handleMessage(RemoteMessage? message) {
+  void _handleMessage(
+    RemoteMessage? message,
+  ) {
     print("handleMessage: " + (message?.data['type'] ?? "null"));
-    switch (message?.data['type']) {
-      case 'match':
-        Get.to(() => MatchPage());
+    switch (message?.data['event']) {
+      case 'find match':
+        ToWebView(
+            double.parse(message?.data['my_latitude']),
+            double.parse(message?.data['my_longitude']),
+            message?.data['other_nickname'],
+            double.parse(message?.data['other_latitude']),
+            double.parse(message?.data['my_longitude']));
+
+        // 매칭 결과 메시지
+        flutterLocalNotificationsPlugin.show(
+          0,
+          notification?.title,
+          notification?.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              'high_importance_channel',
+              // AndroidNotificationChannel()에서 생성한 ID
+              'High Importance Notifications',
+              channelDescription:
+                  'This channel is used for important notifications.',
+              // other properties...
+            ),
+          ),
+        );
         break;
-      case 'accept_match':
-        Get.to(() => AcceptMatchPage());
+      case 'match fail':
+        Get.until((route) => Get.currentRoute == '/match');
         break;
       case 'chat':
         Get.to(() => MatchPage());

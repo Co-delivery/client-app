@@ -18,7 +18,7 @@ class MiddlePointPage extends GetView<WebController> {
 
     return Obx(
       () => Scaffold(
-          appBar: MatchController.to.isMatchAccepted
+          appBar: MatchController.to.isMatchSuccess
               ? AppBar(
                   leading: IconButton(
                     icon: Icon(Icons.arrow_back_outlined, color: Colors.black),
@@ -26,65 +26,73 @@ class MiddlePointPage extends GetView<WebController> {
                   ),
                 )
               : AppBar(
-                  title: Row(children: [
-                    Text(
-                      "매칭 수락까지 남은 시간 ",
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    ),
-                    Text(
-                      controller.waitTime.toString(),
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    )
-                  ]),
-                  bottom: PreferredSize(
-                      preferredSize: Size.fromHeight(50.0),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: kDefaultPadding,
-                            vertical: kDefaultPadding / 2),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: OutlinedButton(
-                                    onPressed: () async {
-                                      await MatchController.to.acceptMatch(1);
-                                      Get.back();
-                                    },
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.white)),
-                                    child: Text(
-                                      "거절",
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 20),
-                                    ))),
-                            SizedBox(
-                              width: kDefaultPadding / 2,
-                            ),
-                            Expanded(
-                                child: OutlinedButton(
-                                    onPressed: () async =>
-                                        await MatchController.to.acceptMatch(2),
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.white)),
-                                    child: Text(
-                                      "수락",
-                                      style: TextStyle(
-                                          color: Colors.red, fontSize: 20),
-                                    )))
-                          ],
+                  centerTitle: true,
+                  title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "매칭 수락까지 남은 시간\n",
+                          style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
-                      )),
+                        Text(
+                          controller.waitTime.toString(),
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        )
+                      ]),
+                  bottom: MatchController.to.isMatchAccepted
+                      ? PreferredSize(
+                          child: Container(), preferredSize: Size.fromHeight(0))
+                      : PreferredSize(
+                          preferredSize: Size.fromHeight(60.0),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: kDefaultPadding,
+                                vertical: kDefaultPadding / 2),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    child: OutlinedButton(
+                                        onPressed: () =>
+                                            controller.openWarningDialog(),
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.white)),
+                                        child: Text(
+                                          "거절",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20),
+                                        ))),
+                                SizedBox(
+                                  width: kDefaultPadding / 2,
+                                ),
+                                Expanded(
+                                    child: OutlinedButton(
+                                        onPressed: () async =>
+                                            await MatchController.to
+                                                .acceptMatch(2),
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.white)),
+                                        child: Text(
+                                          "수락",
+                                          style: TextStyle(
+                                              color: Colors.red, fontSize: 20),
+                                        )))
+                              ],
+                            ),
+                          )),
                   leading: IconButton(
                     icon: Icon(Icons.arrow_back_outlined, color: Colors.black),
-                    onPressed: () => Get.back(),
+                    onPressed: () => controller.openWarningDialog(),
                   ),
                 ),
           body: MiddlePointBody(),
-          floatingActionButton: buildFloatingActionButton(context)),
+          floatingActionButton: MatchController.to.isMatchSuccess
+              ? buildFloatingActionButton(context)
+              : Container()),
     );
   }
 

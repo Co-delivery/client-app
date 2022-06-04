@@ -1,21 +1,24 @@
 import 'dart:async';
 
+import 'package:codelivery/app/controller/dialog.dart';
 import 'package:codelivery/app/controller/match.dart';
 import 'package:codelivery/app/controller/user.dart';
 import 'package:codelivery/app/ui/middle_point/middle_point.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 void ToWebView(double mainUserLat, double mainUserLon, String otherUserNickname,
-        double otherUserLat, double otherUserLon) =>
-    Get.to(MiddlePointPage(), binding: BindingsBuilder(() {
-      Get.put(WebController(
-          mainUserLat: mainUserLat,
-          mainUserLon: mainUserLon,
-          otherUserNickname: otherUserNickname,
-          otherUserLat: otherUserLat,
-          otherUserLon: otherUserLon));
-    }));
+    double otherUserLat, double otherUserLon) {
+  Get.to(MiddlePointPage(), binding: BindingsBuilder(() {
+    Get.put(WebController(
+        mainUserLat: mainUserLat,
+        mainUserLon: mainUserLon,
+        otherUserNickname: otherUserNickname,
+        otherUserLat: otherUserLat,
+        otherUserLon: otherUserLon));
+  }), popGesture: false);
+}
 
 class WebController extends GetxController {
   static WebController get to => Get.find<WebController>();
@@ -86,4 +89,23 @@ class WebController extends GetxController {
     await webViewController!.runJavascript(
         'window.getMatchResult("${UserController.to.user.nickname}", "${roomName}")');
   }
+
+  openWarningDialog() =>
+      DialogController.to.openDialog("매칭이 취소됩니다.", "매칭을 취소하시겠습니까?", [
+        TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              "아니오",
+            )),
+        TextButton(
+            onPressed: () async {
+              await MatchController.to.acceptMatch(1);
+              Get.back();
+              Get.back();
+            },
+            child: Text(
+              "예",
+              style: TextStyle(color: Colors.red),
+            ))
+      ]);
 }
