@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:codelivery/app/controller/dialog.dart';
 import 'package:codelivery/app/controller/order.dart';
@@ -6,10 +7,14 @@ import 'package:codelivery/app/controller/user.dart';
 import 'package:codelivery/app/controller/web_view.dart';
 import 'package:codelivery/app/data/repository/match.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-class MatchController extends GetxController {
+class MatchController extends FullLifeCycleController with FullLifeCycleMixin {
   static MatchController get to => Get.find<MatchController>();
+  static const applicationLifecycleChannel =
+      BasicMessageChannel<String>('applicationLifeCycle', StringCodec());
+  static const kApplicationWillTerminate = 'applicationWillTerminate';
 
   final MatchRepository repository;
 
@@ -17,6 +22,23 @@ class MatchController extends GetxController {
 
   MatchController({required this.repository}) {
     setTimer();
+  }
+
+  @override
+  void onInit() {
+    applicationLifecycleChannel.setMessageHandler((message) async {
+      switch (message) {
+        case kApplicationWillTerminate:
+          debugPrint("onDetached");
+          if (!isMatchCanceled) await cancelMatch();
+          _timer.cancel();
+          break;
+        default:
+          break;
+      }
+      return message as String;
+    });
+    super.onInit();
   }
 
   @override
@@ -35,7 +57,34 @@ class MatchController extends GetxController {
     super.onClose();
   }
 
-  final RxInt _waitTime = 300.obs;
+  @override
+  void onDetached() async {
+    // debugPrint("onDetached");
+    // if (!isMatchCanceled) await cancelMatch();
+    // sleep(const Duration(seconds:2));
+    // _timer.cancel();
+    // // TODO: implement onDetached
+  }
+
+  @override
+  void onInactive() {
+    debugPrint("onInactive");
+    // TODO: implement onInactive
+  }
+
+  @override
+  void onPaused() {
+    debugPrint("onPaused");
+    // TODO: implement onPaused
+  }
+
+  @override
+  void onResumed() {
+    debugPrint("onResumed");
+    // TODO: implement onResumed
+  }
+
+  final RxInt _waitTime = 12.obs;
   final RxBool _isFindSuccess = false.obs;
   final RxBool _isMatchTimeOut = false.obs;
   final RxBool _isMatchAccepted = false.obs;
@@ -80,8 +129,8 @@ class MatchController extends GetxController {
       } else {
         isMatchTimeOut = true;
         isFindSuccess = false;
-        showTimeOutDialog();
         _timer.cancel();
+        if (!(Get?.isDialogOpen ?? false)) showTimeOutDialog();
         await cancelMatch();
       }
     });
