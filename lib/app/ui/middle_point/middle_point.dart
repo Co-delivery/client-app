@@ -6,7 +6,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 
 import 'package:codelivery/app/ui/middle_point/components/body.dart';
-import 'package:codelivery/app/ui/middle_point/components/floating_action_button.dart';
 
 import '../../controller/match.dart';
 import '../../controller/web_view.dart';

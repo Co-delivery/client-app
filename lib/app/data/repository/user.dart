@@ -1,15 +1,23 @@
-import 'package:codelivery/app/data/provider/api.dart';
+import 'package:codelivery/app/data/provider/user_api.dart';
 
 class UserRepository {
-  final ApiClient apiClient;
+  final UserApiClient apiClient;
 
   UserRepository({required this.apiClient});
 
-  getAll() {
-    return apiClient.getAll();
-  }
+  Future<Map<String, String>?> updateAddress(
+      String userId, String address) async {
+    Map<String, String> data = {'userId': userId, 'address': address};
 
-  postAll() {
-    return apiClient.postAll();
+    final result = await apiClient.updateAddress(data);
+
+    if (result['httpStatus'] == 200) {
+      return {
+        'userId': result['data']['userId'],
+        'address': result['data']['address']
+      };
+    } else {
+      return null;
+    }
   }
 }
