@@ -84,7 +84,7 @@ class MatchController extends FullLifeCycleController with FullLifeCycleMixin {
     // TODO: implement onResumed
   }
 
-  final RxInt _waitTime = 12.obs;
+  final RxInt _waitTime = 300.obs;
   final RxBool _isFindSuccess = false.obs;
   final RxBool _isMatchTimeOut = false.obs;
   final RxBool _isMatchAccepted = false.obs;

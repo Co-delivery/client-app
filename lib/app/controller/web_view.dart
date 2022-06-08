@@ -57,9 +57,13 @@ class WebController extends GetxController {
 
   set isMiddlePointLoading(value) => _isMiddlePointLoading.value = value;
 
+  refreshMiddlePointLoading() => _isMiddlePointLoading.refresh();
+
   get isChatLoading => _isChatLoading.value;
 
   set isChatLoading(value) => _isChatLoading.value = value;
+
+  refreshChatLoading() => _isChatLoading.refresh();
 
   double mainUserLat = 0;
   double mainUserLon = 0;
@@ -97,6 +101,7 @@ class WebController extends GetxController {
           'window.fromFlutter($mainUserLat, $mainUserLon, $otherUserLat, $otherUserLon)');
       print("isMiddle ${isMiddlePointLoading}");
       isMiddlePointLoading = false;
+      _isMiddlePointLoading.refresh();
     } catch (e) {
       debugPrint("sendLocation ${e.toString()}");
     }
@@ -111,7 +116,7 @@ class WebController extends GetxController {
       await webViewController!.runJavascript(
           'window.getMatchResult("${UserController.to.user.nickname}", "${roomName}")');
       isChatLoading = false;
-      print("isMiddle ${isChatLoading}");
+      _isChatLoading.refresh();
     } catch (e) {
       debugPrint("sendLocation ${e.toString()}");
     }

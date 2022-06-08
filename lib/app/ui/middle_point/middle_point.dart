@@ -97,7 +97,12 @@ class MiddlePointPage extends GetView<WebController> {
                 ),
           body: MatchController.to.isMatchSuccess
               ? MiddlePointBody()
-              : MiddlePointWebView(),
+              : Stack(children: [
+                  MiddlePointWebView(),
+                  WebController.to.isMiddlePointLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : Container()
+                ]),
           floatingActionButton: MatchController.to.isMatchSuccess
               ? buildFloatingActionButton(context)
               : Container()),

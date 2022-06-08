@@ -15,18 +15,21 @@ class MiddlePointWebView extends GetView<WebController> {
         initialUrl: 'https://middlecal.herokuapp.com/',
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
+          controller.isMiddlePointLoading = true;
           controller.webViewController = webViewController;
           // controller.sendLocationToWebView("경기도 화성시 동탄지성로 295", "경기도 수원시 권선구 서수원로 607");
         },
-        // onPageStarted: (url) async {
-        //   print("started");
-        //   await controller.sendNicknameToWebView("dongha", "dongha jin");
-        // },
+        onPageStarted: (url) async {
+          controller.isMiddlePointLoading = true;
+          await controller.sendLocationToWebView();
+        },
         onProgress: (url) async {
           await controller.sendLocationToWebView();
         },
-        onPageStarted: (url) async {
-          await controller.sendLocationToWebView();
+        onPageFinished: (url) {
+          controller.isMiddlePointLoading = false;
+          controller.refreshMiddlePointLoading();
+          print("Page finished ${controller.isMiddlePointLoading}");
         },
         javascriptChannels: Set.from([
           JavascriptChannel(
@@ -39,10 +42,7 @@ class MiddlePointWebView extends GetView<WebController> {
                 print(message.message);
               })
         ]),
-      ),
-      WebController.to.isMiddlePointLoading
-          ? Center(child: CircularProgressIndicator())
-          : Container()
+      )
     ]);
   }
 }
