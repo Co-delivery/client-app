@@ -29,6 +29,8 @@ class OrderController extends GetxController {
 
   set orderList(value) => _orderList.value = value;
 
+  refreshOrderList() => _orderList.refresh();
+
   get enableSubMenuAmountList => _enableSubMenuAmountList.value;
 
   set enableSubMenuAmountList(value) => _enableSubMenuAmountList.value = value;
@@ -107,7 +109,11 @@ class OrderController extends GetxController {
     _expectedPrice.refresh();
   }
 
-  deleteMenu(int index) => orderList.removeAt(index);
+  deleteMenu(int index) {
+    _expectedPrice.value -= _orderList[index].value.price * _orderList[index].value.amount;
+    _orderList.removeAt(index);
+    if (_orderList.isEmpty) _expectedPrice.value = 0;
+  }
 
   selectReceiveDelivery(int index) {
     receiveDelivery = receiveDeliveryList[index];
@@ -125,8 +131,8 @@ class OrderController extends GetxController {
   void openDialog(String title, String content, List<Widget> actions) {
     Get.dialog(foundation.defaultTargetPlatform == foundation.TargetPlatform.iOS
         ? CupertinoAlertDialog(
-            title: Text(title), content: Text(content), actions: actions)
+        title: Text(title), content: Text(content), actions: actions)
         : AlertDialog(
-            title: Text(title), content: Text(content), actions: actions));
+        title: Text(title), content: Text(content), actions: actions));
   }
 }

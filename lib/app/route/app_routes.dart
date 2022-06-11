@@ -1,6 +1,7 @@
 import 'package:codelivery/app/binding/dialog.dart';
 import 'package:codelivery/app/binding/location.dart';
 import 'package:codelivery/app/binding/match.dart';
+import 'package:codelivery/app/binding/payment.dart';
 
 import 'package:codelivery/app/ui/middle_point/components/chat_web_view.dart';
 import 'package:get/get.dart';
@@ -19,7 +20,7 @@ import 'package:codelivery/app/binding/restaurant.dart';
 // sign
 import 'package:codelivery/app/ui/getting_started/getting_started.dart';
 import 'package:codelivery/app/ui/sign/sign.dart';
-import 'package:codelivery/app/ui/accept_match/accpet_match.dart';
+import 'package:codelivery/app/ui/accept_match/accept_match.dart';
 
 // home
 import 'package:codelivery/app/ui/home/home.dart';
@@ -30,6 +31,7 @@ import 'package:codelivery/app/ui/menu_detail/menu_detail.dart';
 import 'package:codelivery/app/ui/middle_point/middle_point.dart';
 
 import '../ui/middle_point/components/order_bill.dart';
+import '../ui/order_bill/order_bill.dart';
 
 class AppRoutes implements Routes {
   static final routes = [
@@ -50,11 +52,18 @@ class AppRoutes implements Routes {
     GetPage(name: '/restaurant_detail', page: () => RestaurantDetailPage()),
     GetPage(
         name: '/restaurant_detail/menu_detail', page: () => MenuDetailPage()),
-    GetPage(name: '/accept_match', page: () => AcceptMatchPage()),
     GetPage(
         name: '/match', page: () => MatchPage(), bindings: [MatchBinding()]),
-    GetPage(name: '/middle_point', page: () => MiddlePointPage()),
-    GetPage(name: '/middle_point/chat', page: () => ChatWebView()),
-    GetPage(name: '/middle_point/bill', page: () => OrderBill())
+    GetPage(
+        name: '/match/accept_match',
+        page: () => AcceptMatchPage(),
+        bindings: [PaymentBinding()]),
+    GetPage(
+        name: '/match/order_bill',
+        page: () => OrderBillPage(),
+        bindings: [PaymentBinding()]),
+    GetPage(name: '/match/middle_point', page: () => MiddlePointPage()),
+    GetPage(name: '/match/middle_point/chat', page: () => ChatWebView()),
+    GetPage(name: '/match/middle_point/bill', page: () => OrderBill())
   ];
 }

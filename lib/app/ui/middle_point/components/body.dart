@@ -10,7 +10,7 @@ import '../../../controller/web_view.dart';
 class MiddlePointBody extends GetView {
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Obx(() => Stack(
       children: [
         MiddlePointWebView(),
         Padding(
@@ -24,6 +24,6 @@ class MiddlePointBody extends GetView {
             ? Center(child: CircularProgressIndicator())
             : Container()
       ],
-    );
+    ));
   }
 }

@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:codelivery/app/controller/dialog.dart';
 import 'package:codelivery/app/controller/match.dart';
 import 'package:codelivery/app/controller/user.dart';
-import 'package:codelivery/app/ui/middle_point/middle_point.dart';
+import 'package:codelivery/app/ui/accept_match/accept_match.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-void ToWebView(double mainUserLat, double mainUserLon, String otherUserNickname,
-    double otherUserLat, double otherUserLon) {
-  Get.to(MiddlePointPage(), binding: BindingsBuilder(() {
+void ToAcceptMatchPage(double mainUserLat, double mainUserLon,
+    String otherUserNickname, double otherUserLat, double otherUserLon) {
+  Get.to(AcceptMatchPage(), binding: BindingsBuilder(() {
     Get.put(WebController(
         mainUserLat: mainUserLat,
         mainUserLon: mainUserLon,
@@ -23,7 +24,8 @@ void ToWebView(double mainUserLat, double mainUserLon, String otherUserNickname,
 class WebController extends GetxController {
   static WebController get to => Get.find<WebController>();
 
-  WebViewController? webViewController;
+  WebViewController? locationWebViewController;
+  WebViewController? chatWebViewController;
 
   WebController(
       {required this.mainUserLat,
@@ -97,8 +99,8 @@ class WebController extends GetxController {
 
   sendLocationToWebView() async {
     try {
-      await webViewController!.runJavascriptReturningResult(
-          'window.fromFlutter($mainUserLat, $mainUserLon, $otherUserLat, $otherUserLon)');
+      await locationWebViewController!.runJavascriptReturningResult(
+          'window.fromFlutter($mainUserLon, $mainUserLat,  $otherUserLon, $otherUserLat)');
       print("isMiddle ${isMiddlePointLoading}");
       isMiddlePointLoading = false;
       _isMiddlePointLoading.refresh();
@@ -113,8 +115,8 @@ class WebController extends GetxController {
             ? (UserController.to.user.nickname + " " + otherUserNickname)
             : (otherUserNickname + " " + UserController.to.user.nickname);
     try {
-      await webViewController!.runJavascript(
-          'window.getMatchResult("${UserController.to.user.nickname}", "${roomName}")');
+      await chatWebViewController!.runJavascriptReturningResult(
+          'window.getMatchResult("${UserController.to.user.nickname}", "$roomName")');
       isChatLoading = false;
       _isChatLoading.refresh();
     } catch (e) {

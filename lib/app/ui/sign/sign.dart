@@ -10,10 +10,7 @@ class SignPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SignBody(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => Get.toNamed('/home'),
-        )
+        body: SignBody()
     );
   }
 }

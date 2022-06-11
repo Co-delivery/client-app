@@ -15,28 +15,31 @@ class OrderBasketPage extends GetView<OrderController> {
     final heightBottomFixedButton = 60.0;
     final heightCenter = size.height - (heightBottomFixedButton + heightAppBar);
 
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(
-            "장바구니",
-            style: TextStyle(color: Colors.black),
+    return Obx(() => Scaffold(
+          appBar: AppBar(
+              title: Text(
+                "장바구니",
+                style: TextStyle(color: Colors.black),
+              ),
+              backgroundColor: Colors.white,
+              elevation: 0,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back_outlined, color: Colors.black),
+                onPressed: () => Get.back(),
+              )),
+          body: controller.orderList.isEmpty
+              ? Container(
+                  alignment: Alignment.center,
+                  height: heightCenter,
+                  child: Text(
+                    "주문이 없어요!",
+                    style: TextStyle(fontSize: 20),
+                  ))
+              : OrderBasketBody(),
+          bottomSheet: BottomFixedButton(),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => Get.toNamed('/middle_point/chat'),
           ),
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_outlined, color: Colors.black),
-            onPressed: () => Get.back(),
-          )),
-      body: controller.orderList.isEmpty
-          ? Container(
-              alignment: Alignment.center,
-              height: heightCenter,
-              child: Text(
-                "주문이 없어요!",
-                style: TextStyle(fontSize: 20),
-              ))
-          : OrderBasketBody(),
-      bottomSheet: BottomFixedButton(),
-    );
+        ));
   }
 }

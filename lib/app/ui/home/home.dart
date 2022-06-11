@@ -94,13 +94,18 @@ class HomePage extends GetView {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Obx(() => Text(
-                      UserController.to.user.address,
-                      style: TextStyle(fontSize: 16),
-                    )),
+                Center(
+                    child: Obx(() => Flexible(
+                      fit: FlexFit.tight,
+                            child: Text(
+                          UserController.to.user.address,
+                          style: TextStyle(
+                              fontSize: 16, overflow: TextOverflow.clip),
+                        )))),
                 const Icon(Icons.keyboard_arrow_down_rounded)
               ],
             )),
+        centerTitle: true,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(10),

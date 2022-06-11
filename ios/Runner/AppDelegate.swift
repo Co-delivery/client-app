@@ -9,14 +9,14 @@ import Flutter
         GeneratedPluginRegistrant.register(with: self)
 
         applicationLifeCycleChannel = FlutterBasicMessageChannel(
-            name: "applicationLifeCycle",
+            name: "iOSApplicationLifeCycle",
             binaryMessenger: (window?.rootViewController as! FlutterViewController).binaryMessenger,
             codec: FlutterStringCodec.sharedInstance())
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
     override func applicationWillTerminate(_ application: UIApplication) {
-        applicationLifeCycleChannel.sendMessage("applicationWillTerminate")
+        applicationLifeCycleChannel.sendMessage("iOSApplicationWillTerminate")
         sleep(2);
     }
     // 앱을 다시 화면에 띄웠을 때

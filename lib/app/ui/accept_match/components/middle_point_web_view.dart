@@ -29,7 +29,6 @@ class MiddlePointWebView extends GetView<WebController> {
         },
         onPageFinished: (url) {
           controller.isMiddlePointLoading = false;
-
           print("Page finished ${controller.isMiddlePointLoading}");
         },
         javascriptChannels: Set.from([

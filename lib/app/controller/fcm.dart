@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' as foundation;
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -11,11 +10,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:codelivery/app/controller/match.dart';
 import 'package:codelivery/app/controller/web_view.dart';
-import 'package:codelivery/app/controller/dialog.dart';
-
-import 'package:codelivery/app/ui/match/match.dart';
-import 'package:codelivery/app/ui/accept_match/accpet_match.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 // provider로 이동하는 게 맞지 않을까? 푸시 알람은 UI를 컨트롤하는 부분이 없는 것 같은데...
 // 해봐야 눌렀을 때 페이지 이동 정도?
@@ -90,7 +84,8 @@ class FcmController extends GetxController {
       _handleMessage(message.value);
     });
 
-    // background push notification
+    // FirebaseMessaging.onBackgroundMessage(_handleMessage);
+
     FirebaseMessaging.onMessage.listen((RemoteMessage remoteMessage) {
       message.value = remoteMessage;
       print("onMessage: ${message.value?.data.toString()}");
@@ -114,7 +109,32 @@ class FcmController extends GetxController {
       }
     });
 
-    // print(await FirebaseMessaging.instance.getToken());
+    FirebaseMessaging.onBackgroundMessage((message) => _handleMessage(message));
+
+    // background push notification
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage remoteMessage) {
+      message.value = remoteMessage;
+      print("onMessageOpendApp: ${message.value?.data.toString()}");
+      notification = remoteMessage.notification;
+      AndroidNotification? android = remoteMessage.notification?.android;
+
+      bool isIOS =
+          (foundation.defaultTargetPlatform == foundation.TargetPlatform.iOS &&
+                  notification != null)
+              ? true
+              : false;
+      bool isAndroid = (foundation.defaultTargetPlatform ==
+                  foundation.TargetPlatform.android &&
+              notification != null &&
+              android != null)
+          ? true
+          : false;
+
+      if (isIOS || isAndroid) {
+        _handleMessage(message.value);
+      }
+    });
+
     return true;
   }
 
@@ -132,15 +152,15 @@ class FcmController extends GetxController {
     return;
   }
 
-  void _handleMessage(
+  Future<void> _handleMessage(
     RemoteMessage? message,
-  ) {
+  ) async {
     print("handleMessage: " + (message?.data['type'] ?? "null"));
     switch (message?.data['event']) {
       case 'find match':
         MatchController.to.matchId = int.parse(message?.data['matchId']);
         MatchController.to.user_num = int.parse(message?.data['user_num']);
-        ToWebView(
+        ToAcceptMatchPage(
             double.parse(message?.data['my_latitude']),
             double.parse(message?.data['my_longitude']),
             message?.data['other_nickname'],
@@ -154,95 +174,52 @@ class FcmController extends GetxController {
           notification?.body,
           NotificationDetails(
             android: AndroidNotificationDetails(
-              'high_importance_channel',
-              // AndroidNotificationChannel()에서 생성한 ID
-              'High Importance Notifications',
-              channelDescription:
-                  'This channel is used for important notifications.',
-              // other properties...
-            ),
+                'high_importance_channel',
+                // AndroidNotificationChannel()에서 생성한 ID
+                'High Importance Notifications',
+                channelDescription:
+                    'This channel is used for important notifications.',
+                importance: Importance.max
+                // other properties...
+                ),
           ),
         );
         break;
-      case 'match fail':
-        Get.until((route) {
-          if (Get.currentRoute == '/match') {
-            MatchController.to.setTimer();
-            return true;
-          } else {
-            return false;
-          }
-        });
-        break;
-      case 'match success':
+      case 'payment required':
+        MatchController.to.cancelTimer();
         MatchController.to.isMatchSuccess = true;
-        WebController.to.cancelTimer();
-        WebController.to.isMiddlePointLoading = true;
+        bool isMatchControllerExist = Get.isRegistered<MatchController>();
+
+        if (isMatchControllerExist) Get.toNamed('/match/order_bill');
 
         break;
-      case 'match':
-        Get.to(() => MatchPage());
+      case 'match fail':
+        bool isMatchControllerExist = Get.isRegistered<MatchController>();
+
+        if (isMatchControllerExist) {
+          Get.until((route) {
+            if (Get.currentRoute == '/match') {
+              MatchController.to.setTimer();
+              return true;
+            } else {
+              return false;
+            }
+          });
+        }
         break;
-      case 'match':
-        Get.to(() => MatchPage());
+      case 'match success':
+        bool isMatchControllerExist = Get.isRegistered<MatchController>();
+
+        if (isMatchControllerExist) {
+          MatchController.to.cancelTimer();
+          WebController.to.cancelTimer();
+          WebController.to.isMiddlePointLoading = true;
+
+          Get.offNamed('/match/middle_point');
+        }
         break;
       default:
-        return;
+        break;
     }
   }
-// // userToken에 해당하는 user에게 푸쉬 알람을 보냄.
-// Future<void> sendMessage({
-//   required String userToken,
-//   required String title,
-//   required String body,
-// }) async {
-//   final String _serverKey = dotenv.env['FCM_SERVER_KEY'] ?? "";
-//   http.Response response;
-//
-//   NotificationSettings settings =
-//       await FirebaseMessaging.instance.requestPermission(
-//     alert: true,
-//     announcement: false,
-//     badge: true,
-//     carPlay: false,
-//     criticalAlert: false,
-//     provisional: false,
-//     sound: false,
-//   );
-//   // permission - 항상 허용
-//   // provisional permission - 앱을 사용하는 동안 허용
-//   // 나머지 거절
-//   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-//     print('User granted permission');
-//   } else if (settings.authorizationStatus ==
-//       AuthorizationStatus.provisional) {
-//     print('User granted provisional permission');
-//   } else {
-//     print('User declined or has not accepted permission');
-//   }
-//
-//   try {
-//     response = await http.post(Uri.parse(dotenv.env['FCM_API_URL'] ?? ""),
-//         headers: <String, String>{
-//           'Content-Type': 'application/json',
-//           'Authorization': 'key=$_serverKey'
-//         },
-//         body: jsonEncode({
-//           'notification': {'title': title, 'body': body, 'sound': 'false'},
-//           'ttl': '60s',
-//           "content_available": true,
-//           'data': {
-//             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-//             'id': '1',
-//             'status': 'done',
-//             "action": '테스트',
-//           },
-//           // 상대방 토큰 값, to -> 단일, registration_ids -> 여러명
-//           'to': userToken
-//           // 'registration_ids': tokenList
-//         }));
-//   } catch (e) {
-//     print('error $e');
-//   }
-// }
 }

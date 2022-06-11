@@ -19,7 +19,7 @@ class UserApiClient {
 
   Future<Map<String, dynamic>> updateAddress(Map<String, String> data) async =>
       await httpApiClient.post(
-          'http://' + dotenv.env['SERVER_IP']! + ":8080/user/signup",
+          'http://' + dotenv.env['SERVER_IP']! + ":8080/user/address",
           data,
           headers);
 }

@@ -12,6 +12,7 @@ class Description extends GetView<MatchController> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.start,
       children: [
@@ -26,14 +27,23 @@ class Description extends GetView<MatchController> {
           height: kDefaultPadding,
         ),
         Row(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text("주소  ",
                 style: TextStyle(
                     color: Colors.black, fontSize: kMatchOptionFontSize)),
-            Text(UserController.to.user.address,
-                style: TextStyle(
-                    color: Colors.black, fontSize: kMatchSubTitleFontSize)),
+            Flexible(
+                child: Text(
+              UserController.to.user.address,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: kMatchSubTitleFontSize,
+              ),
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.ellipsis,
+            )),
           ],
         ),
         const SizedBox(height: kDefaultPadding / 2),

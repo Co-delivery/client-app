@@ -23,10 +23,16 @@ class OrderList extends GetView<OrderController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                controller.orderList[i].value.name,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+              Row(children: [
+                Expanded(
+                    child: Text(
+                  controller.orderList[i].value.name,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                )),
+                IconButton(
+                    onPressed: () => controller.deleteMenu(i),
+                    icon: Icon(Icons.clear_outlined))
+              ]),
               SizedBox(
                 height: kDefaultPadding,
               ),

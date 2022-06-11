@@ -4,17 +4,24 @@ import 'dart:io';
 import 'package:codelivery/app/controller/dialog.dart';
 import 'package:codelivery/app/controller/order.dart';
 import 'package:codelivery/app/controller/user.dart';
-import 'package:codelivery/app/controller/web_view.dart';
+
 import 'package:codelivery/app/data/repository/match.dart';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class MatchController extends FullLifeCycleController with FullLifeCycleMixin {
   static MatchController get to => Get.find<MatchController>();
-  static const applicationLifecycleChannel =
-      BasicMessageChannel<String>('applicationLifeCycle', StringCodec());
-  static const kApplicationWillTerminate = 'applicationWillTerminate';
+  static const iOSApplicationLifecycleChannel =
+      BasicMessageChannel<String>('iOSApplicationLifeCycle', StringCodec());
+  static const androidApplicationLifecycleChannel =
+      BasicMessageChannel<String>('androidApplicationLifeCycle', StringCodec());
+
+  static const kiOSApplicationWillTerminate = 'iOSApplicationWillTerminate';
+  static const kAndroidApplicationWillTerminate =
+      'androidApplicationWillTerminate';
 
   final MatchRepository repository;
 
@@ -25,10 +32,11 @@ class MatchController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   @override
-  void onInit() {
-    applicationLifecycleChannel.setMessageHandler((message) async {
+  void onInit() async {
+    iOSApplicationLifecycleChannel.setMessageHandler((message) async {
+      print("message: $message");
       switch (message) {
-        case kApplicationWillTerminate:
+        case kiOSApplicationWillTerminate:
           debugPrint("onDetached");
           if (!isMatchCanceled) await cancelMatch();
           _timer.cancel();
@@ -38,6 +46,23 @@ class MatchController extends FullLifeCycleController with FullLifeCycleMixin {
       }
       return message as String;
     });
+
+    androidApplicationLifecycleChannel.setMessageHandler((message) async {
+      print("message: $message");
+      switch (message) {
+        case kAndroidApplicationWillTerminate:
+          print("onDetached");
+          await cancelMatch();
+          if (!isMatchCanceled) await cancelMatch();
+          _timer.cancel();
+          break;
+        default:
+          break;
+      }
+
+      return message as String;
+    });
+
     super.onInit();
   }
 
@@ -59,11 +84,8 @@ class MatchController extends FullLifeCycleController with FullLifeCycleMixin {
 
   @override
   void onDetached() async {
-    // debugPrint("onDetached");
-    // if (!isMatchCanceled) await cancelMatch();
-    // sleep(const Duration(seconds:2));
-    // _timer.cancel();
-    // // TODO: implement onDetached
+    cancelMatch();
+    debugPrint("onDetached");
   }
 
   @override
@@ -124,13 +146,14 @@ class MatchController extends FullLifeCycleController with FullLifeCycleMixin {
     if (!isMatchRequested) await requestMatch();
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+      print("match Timer ${waitTime}");
       if (waitTime > 0) {
         waitTime -= 1;
       } else {
         isMatchTimeOut = true;
         isFindSuccess = false;
-        _timer.cancel();
-        if (!(Get?.isDialogOpen ?? false)) showTimeOutDialog();
+        timer.cancel();
+        if (!(Get.isDialogOpen ?? false)) showTimeOutDialog();
         await cancelMatch();
       }
     });
@@ -143,6 +166,7 @@ class MatchController extends FullLifeCycleController with FullLifeCycleMixin {
         .openDialog("매칭을 할 수가 없어요 😭", "주변 동네에 공동 배달을 주문한 사람이 없습니다.", [
       TextButton(
           onPressed: () {
+            _timer.cancel();
             Get.back();
             Get.back();
           },
@@ -195,21 +219,18 @@ class MatchController extends FullLifeCycleController with FullLifeCycleMixin {
     }
   }
 
-  cancelMatch() async {
+  FutureOr<dynamic> cancelMatch() async {
     if (isMatchCanceled) return;
 
     final result =
         await repository.cancelMatch(UserController.to.user.nickname);
-    // 추후 실 테스트
-    // final result =
-    //     await repository.cancelMatch(UserController.to.user.nickname);
 
     isMatchCanceled = true;
 
     if (result['statusCode'] == 200) {
-      return true;
+      return;
     } else {
-      return false;
+      return;
     }
   }
 
@@ -242,7 +263,7 @@ class MatchController extends FullLifeCycleController with FullLifeCycleMixin {
             onPressed: () async {
               await MatchController.to.acceptMatch(2);
               Get.back();
-              Get.back();
+              Get.offNamedUntil('/order_basket', (route) => false);
             },
             child: Text("취소")),
         TextButton(
